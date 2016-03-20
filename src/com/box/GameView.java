@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
@@ -81,6 +82,7 @@ import com.box.MapFactory;
 			if(list.size()>0)
 			{
 				//若要撤销 必须走过
+//				Map priorMap=(Map)list.get(list.size()-1);
 				Map priorMap=(Map)list.get(list.size()-1);
 				map=priorMap.getMap();
 				row=priorMap.getManX();
@@ -150,13 +152,27 @@ import com.box.MapFactory;
 		int columnCount=pre.getInt("column", 0);
 		grade=pre.getInt("grade", 0);
 		map=new byte[rowCount][columnCount];
+		Log.e("mapString", mapString);
 		String str[]=mapString.split(",");
+		Log.e("str", str.toString());
+//		String d = "";
+//		for(int i=0; i<str.length; i++) {
+//			d += str[i];
+//		}
+//		char[] data = d.toCharArray();
 		int index=0;
-		for(int i=0;i<rowCount;i++)
+		//TODO 添加了i<str.length
+		for(int i=0;i<rowCount;i++) {
+			
 			for(int j=0;j<columnCount;j++)
 			{
-				map[i][j]=(byte)Integer.parseInt(str[index++]);
+				String point = str[index] + "";
+				Log.e("point==>", point);
+				index++;
+				map[i][j]=(byte)Integer.parseInt(point);
 			}
+		}
+			
 		getMapSizeAndPosition();}
 		//getManPosition();不用获得人的位置，因为地图初始化可以直接完成人的位置的回归
 	}
@@ -197,9 +213,9 @@ import com.box.MapFactory;
 
 	public void getPic()
 	{
-		pic=new Bitmap[15];
+		pic=new Bitmap[18];
 		game_bg=BitmapFactory.decodeResource(getResources(), R.drawable.game_bg);
-		//pic[0]=BitmapFactory.decodeResource(getResources(), R.drawable.pic0);
+		pic[0]=BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		pic[1]=BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
 		pic[2]=BitmapFactory.decodeResource(getResources(), R.drawable.pic2);
 		pic[3]=BitmapFactory.decodeResource(getResources(), R.drawable.pic3);
@@ -543,8 +559,9 @@ import com.box.MapFactory;
 	{
 		for(int i=0;i<mapRow;i++)
 			for(int j=0;j<mapColumn;j++)
-				if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND)
-				return false;
+				//if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND||map[i][j]==TAGET)
+				if(map[i][j]==END||map[i][j]==TAGET)
+					return false;
 		return true;				
 	}
 	

@@ -109,8 +109,9 @@ public class GameMain extends Activity {
     		for(int j=0;j<column;j++)
     		{
     			mapString.append(map[i][j]);
-    			
-    		}mapString.append(",");}
+    			mapString.append(",");
+    		}
+    	}
     	//最后多加了一个逗号，解析时注意
     	/*很多时候我们开发的软件需要向用户提供软件参数设置功能，
     	 * Android平台给我们提供了一个SharedPreferences类，
