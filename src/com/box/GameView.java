@@ -53,7 +53,8 @@ import com.box.MapFactory;
 	//定义一些常量，对应地图的元素
 	final byte WALL=1,BOX=2,BOXONEND=3,END=4,MANDOWN=5,MANLEFT=6,MANRIGHT=7,
 			MANUP=8,GRASS=9,MANDOWNONEND=10,MANLEFTONEND=11,MANRIGHTONEND=12,
-			MANUPONEND=13,DIAMOND=14,WATER=15,TARGET=16;
+			MANUPONEND=13,DIAMOND=14,WATER=15,WATEREND=16,TAGET=17;
+	//water和waterend暂时用不到
 	private Paint paint=null;
 	private GameMain gameMain=null;
 	private byte[][] map=null;
@@ -215,6 +216,7 @@ import com.box.MapFactory;
 		pic[14]=BitmapFactory.decodeResource(getResources(), R.drawable.pic14);
 		pic[15]=BitmapFactory.decodeResource(getResources(), R.drawable.pic15);
 		pic[16]=BitmapFactory.decodeResource(getResources(), R.drawable.pic16);
+		pic[17]=BitmapFactory.decodeResource(getResources(), R.drawable.pic17);
 		}
 	
 	@Override
@@ -406,6 +408,19 @@ import com.box.MapFactory;
 				map[row][column]=grassOrEnd(map[row][column]);
 				row++;
 				
+			}else{
+				//下一位是钻石
+				if(map[row+1][column]==DIAMOND)
+				{
+					Map currMap=new Map(row,column,map);
+					list.add(currMap);
+					byte temp=MANDOWN;
+					map[row+1][column]=temp;
+					map[row][column]=grassOrEnd(map[row][column]);
+					//钻石记数+1
+					diamondcount++;
+					row++;
+				}
 			}		
 		}
 	}
@@ -450,6 +465,19 @@ import com.box.MapFactory;
 				map[row][column]=grassOrEnd(map[row][column]);
 				column--;
 				
+			}else{
+				//左一位是钻石
+				if(map[row][column-1]==DIAMOND)
+				{
+					Map currMap=new Map(row,column,map);
+					list.add(currMap);
+					byte temp=MANLEFT;
+					map[row][column-1]=temp;
+					map[row][column]=grassOrEnd(map[row][column]);
+					//钻石记数+1
+					diamondcount++;
+					column--;
+				}
 			}		
 		}
 	}
@@ -494,6 +522,19 @@ import com.box.MapFactory;
 				map[row][column]=grassOrEnd(map[row][column]);
 				column++;
 				
+			}else{
+				//右一位是钻石
+				if(map[row+1][column]==DIAMOND)
+				{
+					Map currMap=new Map(row,column,map);
+					list.add(currMap);
+					byte temp=MANRIGHT;
+					map[row][column+1]=temp;
+					map[row][column]=grassOrEnd(map[row][column]);
+					//钻石记数+1
+					diamondcount++;
+					column++;
+				}
 			}		
 		}
 	}
