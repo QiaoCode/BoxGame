@@ -32,7 +32,8 @@ import com.box.Map;
 import com.box.MapFactory;
 
 //布局使用RelativeLayout或FrameLayout,然后view宽高均为match_parent ，叠在所有view的下层
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) @SuppressLint("NewApi") public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGestureListener,OnTouchListener{
+
+public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGestureListener,OnTouchListener{
 	
 
 	private SurfaceHolder holder;
@@ -147,6 +148,7 @@ import com.box.MapFactory;
 			initMap();
 		else
 		{//否则换成用户上一局退出的情况
+		isFinished();
 		row=pre.getInt("manX", 0);
 		column=pre.getInt("manY", 0);
 		int rowCount=pre.getInt("row", 0);
@@ -330,7 +332,7 @@ import com.box.MapFactory;
 		byte result=GRASS;
 		if(man==MANDOWNONEND || man==MANLEFTONEND || man==MANRIGHTONEND || man==MANUPONEND){
 			result=END;//END放箱子的终点
-			}else if(man==TARGETDOWN||man==TARGETLEFT||man==TARGETRIGHT||man==TARGETUP){
+			}else if(man==TARGETDOWN||man==TARGETLEFT||man==TARGETRIGHT||man==TARGETUP||man==TARGETEND){
 			 result=TARGET;
 			}
 		

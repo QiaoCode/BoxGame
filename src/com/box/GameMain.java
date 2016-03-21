@@ -1,10 +1,15 @@
 package com.box;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.box.MapFactory;
 
@@ -15,15 +20,35 @@ public class GameMain extends Activity {
     /** Called when the activity is first created. */
 	//GameView界面，该界面功能为对本案例中的场景进行渲染
 	private GameView view=null;
+	private Button bt_run;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //获得mainactivtty中的视图
+        //获得mainactivity中的视图
         view=(GameView)findViewById(R.id.gameView);
+        //设置按钮监听
+        bt_run=(Button)findViewById(R.id.bt_run);
+        bt_run.setOnClickListener(new OnClickListener(){
+          	@Override
+          	public void onClick(View v){
+          		open();
+			}
+    	});
+    }	
+    //设置一个intent，调用相机
+    private void open() {
+			// TODO Auto-generated method stub
+			Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent,0);
     }
-    
+    //在新的activity中获得图片数据
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+    	super.onActivityResult(requestCode, resultCode, data);
+    //将获得的图像存在Bitmap的bp中
+	 Bitmap bp=(Bitmap)data.getExtras().get("data");
+ }
    
     
     @Override
