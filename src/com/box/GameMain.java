@@ -13,7 +13,7 @@ import com.box.MapFactory;
 
 public class GameMain extends Activity {
     /** Called when the activity is first created. */
-	//GameView界面，该界面功能为对本案例中的场景进行渲染。该类需要继承Android系统中的SurfaceView类,并实现SurfaceHolder.Callback接口.
+	//GameView界面，该界面功能为对本案例中的场景进行渲染
 	private GameView view=null;
 	
     @Override
