@@ -54,7 +54,7 @@ import com.box.MapFactory;
 	//定义一些常量，对应地图的元素
 	final byte WALL=1,BOX=2,BOXONEND=3,END=4,MANDOWN=5,MANLEFT=6,MANRIGHT=7,
 			MANUP=8,GRASS=9,MANDOWNONEND=10,MANLEFTONEND=11,MANRIGHTONEND=12,
-			MANUPONEND=13,DIAMOND=14,WATER=15,WATEREND=16,TAGET=17;
+			MANUPONEND=13,DIAMOND=14,WATER=15,WATEREND=16,TARGET=17,TARGETEND=18;
 	//water和waterend暂时用不到
 	private Paint paint=null;
 	private GameMain gameMain=null;
@@ -213,9 +213,9 @@ import com.box.MapFactory;
 
 	public void getPic()
 	{
-		pic=new Bitmap[18];
+		pic=new Bitmap[19];
 		game_bg=BitmapFactory.decodeResource(getResources(), R.drawable.game_bg);
-		pic[0]=BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		//pic[0]=BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		pic[1]=BitmapFactory.decodeResource(getResources(), R.drawable.pic1);
 		pic[2]=BitmapFactory.decodeResource(getResources(), R.drawable.pic2);
 		pic[3]=BitmapFactory.decodeResource(getResources(), R.drawable.pic3);
@@ -233,6 +233,7 @@ import com.box.MapFactory;
 		pic[15]=BitmapFactory.decodeResource(getResources(), R.drawable.pic15);
 		pic[16]=BitmapFactory.decodeResource(getResources(), R.drawable.pic16);
 		pic[17]=BitmapFactory.decodeResource(getResources(), R.drawable.pic17);
+		pic[18]=BitmapFactory.decodeResource(getResources(), R.drawable.pic18);
 		}
 	
 	@Override
@@ -379,9 +380,31 @@ import com.box.MapFactory;
 					//钻石记数+1
 					diamondcount++;
 					row--;
-				}
+				}else{
+					//上一位是taget
+					if(map[row-1][column]==TARGET)
+					{
+						Map currMap=new Map(row,column,map);
+						list.add(currMap);
+						//判断地图中是否还有钻石或者未完成的箱子
+						for(int i=0;i<mapRow;i++){
+							for(int j=0;j<mapColumn;j++){
+								if(map[i][j]==DIAMOND||map[i][j]==END)
+								{//如果有
+						           byte temp=MANUPONEND;
+						           map[row-1][column]=temp;
+								}else{//没有就返回胜利标志
+								   byte temp=TARGETEND;
+								   map[row-1][column]=temp;
+								}
+							}
+						}
+						map[row][column]=grassOrEnd(map[row][column]);
+						row--;
+						}
 			}
 		}
+	  }
 	}
 	
 	private void moveDown()
@@ -436,7 +459,29 @@ import com.box.MapFactory;
 					//钻石记数+1
 					diamondcount++;
 					row++;
-				}
+				}else{
+					//上一位是taget
+					if(map[row+1][column]==TARGET)
+					{
+						Map currMap=new Map(row,column,map);
+						list.add(currMap);
+						//判断地图中是否还有钻石或者未完成的箱子
+						for(int i=0;i<mapRow;i++){
+							for(int j=0;j<mapColumn;j++){
+								if(map[i][j]==DIAMOND||map[i][j]==END)
+								{//如果有
+						           byte temp=MANUPONEND;
+						           map[row+1][column]=temp;
+								}else{//没有就返回胜利标志
+								   byte temp=TARGETEND;
+								   map[row+1][column]=temp;
+								}
+							}
+						}
+						map[row][column]=grassOrEnd(map[row][column]);
+						row++;
+						}
+			}
 			}		
 		}
 	}
@@ -493,7 +538,29 @@ import com.box.MapFactory;
 					//钻石记数+1
 					diamondcount++;
 					column--;
-				}
+				}else{
+					//上一位是taget
+					if(map[row][column-1]==TARGET)
+					{
+						Map currMap=new Map(row,column,map);
+						list.add(currMap);
+						//判断地图中是否还有钻石或者未完成的箱子
+						for(int i=0;i<mapRow;i++){
+							for(int j=0;j<mapColumn;j++){
+								if(map[i][j]==DIAMOND||map[i][j]==END)
+								{//如果有
+						           byte temp=MANUPONEND;
+						           map[row][column-1]=temp;
+								}else{//没有就返回胜利标志
+								   byte temp=TARGETEND;
+								   map[row][column-1]=temp;
+								}
+							}
+						}
+						map[row][column]=grassOrEnd(map[row][column]);
+						column--;
+						}
+			}
 			}		
 		}
 	}
@@ -540,7 +607,7 @@ import com.box.MapFactory;
 				
 			}else{
 				//右一位是钻石
-				if(map[row+1][column]==DIAMOND)
+				if(map[row][column+1]==DIAMOND)
 				{
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
@@ -550,7 +617,29 @@ import com.box.MapFactory;
 					//钻石记数+1
 					diamondcount++;
 					column++;
-				}
+				}else{
+					//上一位是taget
+					if(map[row][column+1]==TARGET)
+					{
+						Map currMap=new Map(row,column,map);
+						list.add(currMap);
+						//判断地图中是否还有钻石或者未完成的箱子
+						for(int i=0;i<mapRow;i++){
+							for(int j=0;j<mapColumn;j++){
+								if(map[i][j]==DIAMOND||map[i][j]==END)
+								{//如果有
+						           byte temp=MANUPONEND;
+						           map[row][column+1]=temp;
+								}else{//没有就返回胜利标志
+								   byte temp=TARGETEND;
+								   map[row][column+1]=temp;
+								}
+							}
+						}
+						map[row][column]=grassOrEnd(map[row][column]);
+						column++;
+						}
+			}
 			}		
 		}
 	}
@@ -560,9 +649,9 @@ import com.box.MapFactory;
 		for(int i=0;i<mapRow;i++)
 			for(int j=0;j<mapColumn;j++)
 				//if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND||map[i][j]==TAGET)
-				if(map[i][j]==END||map[i][j]==TAGET)
-					return false;
-		return true;				
+				if(map[i][j]==TARGETEND)
+					return true;
+		return false;				
 	}
 	
 	protected void paint(Canvas canvas)
