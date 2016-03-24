@@ -1,5 +1,9 @@
 package com.box;
 
+import java.util.List;
+
+import TopCodes.Scanner;
+import TopCodes.TopCode;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

@@ -1,29 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/game_bg"
-    >
-    
+    android:orientation="vertical" >
+
+ 
  <com.box.GameView 
  	android:id="@+id/gameView"
  	android:layout_width="wrap_content"
  	android:layout_height="wrap_content"
  	android:focusable="true"
- 	android:layout_gravity="center"
+ 	android:gravity="center"
  	>
  </com.box.GameView>
+  
+      <Button
+          android:id="@+id/bt_clock"
+          android:layout_alignTop="@id/gameView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/clock" />
+      <TextView
+          android:id="@+id/clocktext"
+           android:layout_alignTop="@id/gameView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignBaseline="@id/bt_clock"
+          android:layout_toRightOf="@id/bt_clock"
+          android:text="0" />
 
- 
- <Button
-      android:id="@+id/bt_run"
+      <Button
+          android:id="@+id/bt_scroll"
+           android:layout_alignTop="@id/gameView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/clocktext"
+          android:background="@drawable/scroll" />
+
+      <TextView
+          android:id="@+id/scrolltext"
+          android:layout_alignTop="@id/gameView"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignBaseline="@id/bt_scroll"
+          android:layout_toRightOf="@id/bt_scroll"
+          android:text="0" />
+
+
+  
+  <Button
+      android:layout_alignBottom="@id/gameView"
+      android:id="@+id/bt_menu_init"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignBottom="@id/gameView"
+      android:background="@drawable/menu_init_selector"
+       />
+   <Button
+       android:layout_alignBottom="@id/gameView"
+      android:id="@+id/bt_menu_run"
+      android:layout_toRightOf="@id/bt_menu_init"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
-      android:background="@drawable/button_selector"
+      android:background="@drawable/menu_run_selector"
+       />
+ <Button
+      android:id="@+id/bt_run"
+      android:layout_alignBottom="@id/gameView"
+      android:layout_toRightOf="@id/bt_menu_run"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/run_selector"
       android:text="拍照" />
+  <Button
+      android:id="@+id/bt_menu"
+      android:layout_alignBottom="@id/gameView"
+      android:layout_toRightOf="@id/bt_run"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:background="@drawable/menu_selector"
+      />
+
 
  
 </RelativeLayout>
+
