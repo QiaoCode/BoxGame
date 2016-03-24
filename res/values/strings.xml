@@ -4,5 +4,7 @@
     <string name="app_name">pushbox</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="clockcount">0</string>
+    <string name="scrollcount">0</string>
 
 </resources>

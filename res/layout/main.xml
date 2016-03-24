@@ -27,7 +27,7 @@
           android:layout_height="wrap_content"
           android:layout_alignBaseline="@id/bt_clock"
           android:layout_toRightOf="@id/bt_clock"
-          android:text="0" />
+          android:text="@string/clockcount" />
 
       <Button
           android:id="@+id/bt_scroll"
@@ -44,7 +44,7 @@
           android:layout_height="wrap_content"
           android:layout_alignBaseline="@id/bt_scroll"
           android:layout_toRightOf="@id/bt_scroll"
-          android:text="0" />
+          android:text="@string/scrollcount" />
 
 
   

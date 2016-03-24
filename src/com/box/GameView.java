@@ -1,6 +1,8 @@
 package com.box;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -15,6 +17,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.box.Map;
@@ -55,14 +60,84 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	//定义一些常量，对应地图的元素
 	final byte WALL=1,BOX=2,BOXONEND=3,END=4,MANDOWN=5,MANLEFT=6,MANRIGHT=7,
 			MANUP=8,GRASS=9,MANDOWNONEND=10,MANLEFTONEND=11,MANRIGHTONEND=12,
-			MANUPONEND=13,DIAMOND=14,WATER=15,WATEREND=16,TARGET=17,TARGETEND=18,
+			MANUPONEND=13,SCROLL=14,WATER=15,WATEREND=16,TARGET=17,TARGETEND=18,
 			TARGETDOWN=19,TARGETLEFT=20,TARGETRIGHT=21,TARGETUP=22;
 	//water和waterend暂时用不到
 	private Paint paint=null;
 	private GameMain gameMain=null;
 	private byte[][] map=null;
+	//用来存储每个步骤后的地图信息（用来撤销）
 	private ArrayList list=new ArrayList();
 	private GestureDetector mGestureDetector;
+	//加入时间**************************
+	private TextView mTextView=null;
+	private Timer mTimer=null;
+    private TimerTask mTimerTask=null;
+    
+    private Handler mHandler=null;
+    
+    private static int count=0;
+    private boolean isStop=true;
+    
+    private static int delay=1000;//1s
+    private static int period=1000;//1s
+    private static String TAG="Clock";
+    private static final int UPDATE_TEXTVIEW=0;
+  //**************************
+	public void sendMessage(int id){  
+        if (mHandler != null) {  
+            Message message = Message.obtain(mHandler, id);     
+            mHandler.sendMessage(message);   
+        }  
+    }  
+	 protected void updateTextView() {
+	     mTextView.setText(String.valueOf(count)); 
+	}
+	private void startTimer() {
+		mTextView=(TextView)findViewById(R.id.clocktext);
+		mHandler=new Handler(){
+	    	public void handleMessage(Message msg){
+	    		switch (msg.what){
+	    		case UPDATE_TEXTVIEW:
+	    		    updateTextView();
+	    		    break;
+	    		default:
+	    			break;
+	    		}
+	    	}
+	    }; 
+		 if (mTimer == null) {  
+	            mTimer = new Timer();  
+	        }  
+	  
+	     if (mTimerTask == null) {  
+	    	 mTimerTask = new TimerTask() {  
+	                @Override  
+	                public void run() {  
+	                    Log.i(TAG, "count: "+String.valueOf(count));  
+	                    sendMessage(UPDATE_TEXTVIEW);      
+	                      
+	                    count ++;    
+	                }  
+	            };  
+	        }  
+	     if(mTimer != null && mTimerTask != null ) { 
+	           mTimer.schedule(mTimerTask, delay, period);
+	     }
+	     }
+	
+	private void stopTimer() {
+		if (mTimer != null) {  
+	            mTimer.cancel();  
+	            mTimer = null;  
+	        }  
+	  
+	        if (mTimerTask != null) {  
+	            mTimerTask.cancel();  
+	            mTimerTask = null;  
+	        }     
+	        count = 0;  	
+	}
 	
 	public void getManPosition()
 	{
@@ -133,6 +208,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		map=gameMain.getMap(grade);
 		list.clear();
+		startTimer();
 		getMapSizeAndPosition();
 		getManPosition();
 //		Map currMap=new Map(row, column, map);
@@ -382,7 +458,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				row--;
 			}else{
 				//上一位是钻石
-				if(map[row-1][column]==DIAMOND)
+				if(map[row-1][column]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
@@ -402,7 +478,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
-								if(map[i][j]==DIAMOND||map[i][j]==END)
+								if(map[i][j]==SCROLL||map[i][j]==END)
 						           temp=TARGETUP;
 							}
 						}
@@ -457,7 +533,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				
 			}else{
 				//下一位是钻石
-				if(map[row+1][column]==DIAMOND)
+				if(map[row+1][column]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
@@ -477,7 +553,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
-								if(map[i][j]==DIAMOND||map[i][j]==END)
+								if(map[i][j]==SCROLL||map[i][j]==END)
 						           temp=TARGETDOWN;
 							}
 						}
@@ -532,7 +608,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				
 			}else{
 				//左一位是钻石
-				if(map[row][column-1]==DIAMOND)
+				if(map[row][column-1]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
@@ -551,7 +627,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
-								if(map[i][j]==DIAMOND||map[i][j]==END)
+								if(map[i][j]==SCROLL||map[i][j]==END)
 						           temp=TARGETLEFT;
 							}
 						}
@@ -606,7 +682,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				
 			}else{
 				//右一位是钻石
-				if(map[row][column+1]==DIAMOND)
+				if(map[row][column+1]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
@@ -626,7 +702,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
-								if(map[i][j]==DIAMOND||map[i][j]==END)
+								if(map[i][j]==SCROLL||map[i][j]==END)
 						           temp=TARGETRIGHT;
 							}
 						}
@@ -641,6 +717,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	public boolean isFinished()
 	{
+		stopTimer();
 		for(int i=0;i<mapRow;i++)
 			for(int j=0;j<mapColumn;j++)
 				//if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND||map[i][j]==TAGET)
