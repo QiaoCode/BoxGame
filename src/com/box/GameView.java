@@ -30,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ import com.box.MapFactory;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGestureListener,OnTouchListener{
 	
-
+	private static String TAG="GameCount";
 	private SurfaceHolder holder;
 	private int grade=0;
 	//row,column记载人的行号 列号
@@ -55,8 +56,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	//程序所用到的图片
 	private Bitmap pic[]=null;
 	private Bitmap game_bg;
-	//获得钻石的记数
-	private int diamondcount=0;
+	//获得卷轴的记数
+	public int ScrollCount=0;
+	private boolean ScrollFlag=false;//撤销时用的
+	//获得步数的记数
+	public int StepCount=0;
+	//获得游戏结束的时间，保存恢复时使用
+	public int TimerCount=0;
 	//定义一些常量，对应地图的元素
 	final byte WALL=1,BOX=2,BOXONEND=3,END=4,MANDOWN=5,MANLEFT=6,MANRIGHT=7,
 			MANUP=8,GRASS=9,MANDOWNONEND=10,MANLEFTONEND=11,MANRIGHTONEND=12,
@@ -69,75 +75,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	//用来存储每个步骤后的地图信息（用来撤销）
 	private ArrayList list=new ArrayList();
 	private GestureDetector mGestureDetector;
-	//加入时间**************************
-	private TextView mTextView=null;
-	private Timer mTimer=null;
-    private TimerTask mTimerTask=null;
-    
-    private Handler mHandler=null;
-    
-    private static int count=0;
-    private boolean isStop=true;
-    
-    private static int delay=1000;//1s
-    private static int period=1000;//1s
-    private static String TAG="Clock";
-    private static final int UPDATE_TEXTVIEW=0;
-  //**************************
-	public void sendMessage(int id){  
-        if (mHandler != null) {  
-            Message message = Message.obtain(mHandler, id);     
-            mHandler.sendMessage(message);   
-        }  
-    }  
-	 protected void updateTextView() {
-	     mTextView.setText(String.valueOf(count)); 
-	}
-	private void startTimer() {
-		mTextView=(TextView)findViewById(R.id.clocktext);
-		mHandler=new Handler(){
-	    	public void handleMessage(Message msg){
-	    		switch (msg.what){
-	    		case UPDATE_TEXTVIEW:
-	    		    updateTextView();
-	    		    break;
-	    		default:
-	    			break;
-	    		}
-	    	}
-	    }; 
-		 if (mTimer == null) {  
-	            mTimer = new Timer();  
-	        }  
-	  
-	     if (mTimerTask == null) {  
-	    	 mTimerTask = new TimerTask() {  
-	                @Override  
-	                public void run() {  
-	                    Log.i(TAG, "count: "+String.valueOf(count));  
-	                    sendMessage(UPDATE_TEXTVIEW);      
-	                      
-	                    count ++;    
-	                }  
-	            };  
-	        }  
-	     if(mTimer != null && mTimerTask != null ) { 
-	           mTimer.schedule(mTimerTask, delay, period);
-	     }
-	     }
-	
-	private void stopTimer() {
-		if (mTimer != null) {  
-	            mTimer.cancel();  
-	            mTimer = null;  
-	        }  
-	  
-	        if (mTimerTask != null) {  
-	            mTimerTask.cancel();  
-	            mTimerTask = null;  
-	        }     
-	        count = 0;  	
-	}
 	
 	public void getManPosition()
 	{
@@ -165,7 +102,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				row=priorMap.getManX();
 				column=priorMap.getManY();
 				repaint();
+				StepCount--;
 				list.remove(list.size()-1);
+				if(ScrollFlag=true){
+					ScrollCount--;
+				}
 			}
 			else
 				
@@ -207,8 +148,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	public void initMap()
 	{
 		map=gameMain.getMap(grade);
+		StepCount=0;//计数为0
+		ScrollCount=0;
 		list.clear();
-		startTimer();
+		Log.e(TAG,"timer开始");
+		gameMain.startTimer();
 		getMapSizeAndPosition();
 		getManPosition();
 //		Map currMap=new Map(row, column, map);
@@ -220,16 +164,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		SharedPreferences pre=this.getContext().getSharedPreferences("map", 0);
 		//getString()第二个参数为缺省值，如果preference中不存在该key，将返回缺省值
 		String mapString=pre.getString("mapString", "");
-		if(mapString.equals(""))
+		if(mapString.equals("")){
 			initMap();
+		}
 		else
 		{//否则换成用户上一局退出的情况
-		isFinished();
-		row=pre.getInt("manX", 0);
+		isFinished();//先检查是不是游戏已经结束
+		Log.e(TAG,"timer开始");
+		gameMain.startTimer();
+		row=pre.getInt("manX", 0);//先从sharePreferences里面找key 为 “Age” 的数据， 如果有，说明你事先保存过， 那就取“Age”对应的值(事先保存过的值) ，如果没找到key为“Age” 的，被赋予默认值0 
 		column=pre.getInt("manY", 0);
 		int rowCount=pre.getInt("row", 0);
 		int columnCount=pre.getInt("column", 0);
 		grade=pre.getInt("grade", 0);
+		StepCount=pre.getInt("StepCount",0);
+		ScrollCount=pre.getInt("ScrollCount", 0);
 		map=new byte[rowCount][columnCount];
 		Log.e("mapString", mapString);
 		String str[]=mapString.split(",");
@@ -274,6 +223,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		GestureDetector localGestureDetector = new GestureDetector(this);
 	    this.mGestureDetector = localGestureDetector;
 		//initMap();
+	   
 	    //构造方法执行时从优先数据中恢复游戏
 	    //关卡切换时调用initMap()
 	    resumeGame();
@@ -329,7 +279,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		// TODO Auto-generated method stub
 		paint=new Paint();
 		repaint();
-		repaint();
+		//repaint();
 	}
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
@@ -341,7 +291,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		//父类默认的onKeyDown方法，如果按下按键了父类就会返回true 所以回调方法系统会关闭当前activity 
-		if(!acceptKey)//禁用按键？？？
+		if(!acceptKey)//禁用按键？
 			return super.onKeyDown(keyCode, event);
 		/*KEYCODE_DPAD_UP=19;
 		KEYCODE_DPAD_DOWN=20;
@@ -351,21 +301,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		{
 			//向上
 			moveUp();
+			StepCount++;
+			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==20)
 		{
 			//向下
 			moveDown();
+			StepCount++;
+			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==21)
 		{
 			//向左
 			moveLeft();
+			StepCount++;
+			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==22)
 		{
 			//向右
 			moveRight();
+			StepCount++;
+			Log.i(TAG,"StepCount"+StepCount);
 		}
 		repaint();
 		///////////////////
@@ -373,6 +331,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		{
 			//禁用按键
 			acceptKey=false;
+			//计时器停止计时
+			TimerCount=gameMain.getTimerCount();
+			gameMain.stopTimer();	
 			//提示进入下一关
 			Builder builder=new AlertDialog.Builder(gameMain);
 			builder.setTitle("恭喜过关!");
@@ -419,6 +380,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		//上一位为BOX,BOXONEND,WALL
 		//row和column是人的行列号
+		Log.i(TAG,"moveup");
 		if(map[row-1][column]<4)//1，2，3分别为墙，红黄箱子（不可走的）
 		{
 			//上一位为 BOX,BOXONEND
@@ -440,7 +402,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					//人离开后修改人的坐标
 					row--;
 				}
-			}
+			}ScrollFlag=false;
 		}
 		else
 		{
@@ -454,19 +416,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				map[row-1][column]=temp;
 				//人刚才站的地方变成GRASS或者END
 				map[row][column]=grassOrEnd(map[row][column]);
+				ScrollFlag=false;
 				//人离开后修改人的坐标
 				row--;
 			}else{
-				//上一位是钻石
+				//上一位是卷轴
 				if(map[row-1][column]==SCROLL)
 				{
+					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANUP;
 					map[row-1][column]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//钻石记数+1
-					diamondcount++;
+					//卷轴记数+1
+					ScrollCount++;
+					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row--;
 				}else{
 					//上一位是target
@@ -474,7 +439,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					{
 						Map currMap=new Map(row,column,map);
 						list.add(currMap);
-						//判断地图中是否还有钻石或者未完成的箱子
+						//判断地图中是否还有卷轴或者未完成的箱子
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
@@ -485,7 +450,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row-1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row--;
-						}
+						}ScrollFlag=false;
 			}
 		}
 	  }
@@ -515,7 +480,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					row++;
 					
 				}
-			}
+			}ScrollFlag=false;
 		}
 		else
 		{
@@ -530,18 +495,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				row++;
-				
+				ScrollFlag=false;
 			}else{
-				//下一位是钻石
+				//下一位是卷轴
 				if(map[row+1][column]==SCROLL)
 				{
+					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANDOWN;
 					map[row+1][column]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//钻石记数+1
-					diamondcount++;
+					//卷轴记数+1
+					ScrollCount++;
+					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row++;
 				}else{
 					//下一位是target
@@ -560,7 +527,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row+1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row++;
-						}
+						}ScrollFlag=false;
 			}
 			}		
 		}
@@ -590,7 +557,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					column--;
 					
 				}
-			}
+			}ScrollFlag=false;
 		}
 		else
 		{
@@ -605,18 +572,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column--;
-				
+				ScrollFlag=false;
 			}else{
-				//左一位是钻石
+				//左一位是卷轴
 				if(map[row][column-1]==SCROLL)
 				{
+					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANLEFT;
 					map[row][column-1]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//钻石记数+1
-					diamondcount++;
+					//卷轴记数+1
+					ScrollCount++;
+					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column--;
 				}else{
 					//左一位是target
@@ -634,7 +603,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column-1]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						column--;
-						}
+						}ScrollFlag=false;
 			}
 			}		
 		}
@@ -664,7 +633,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					column++;
 					
 				}
-			}
+			}ScrollFlag=false;
 		}
 		else
 		{
@@ -679,18 +648,20 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column++;
-				
+				ScrollFlag=false;
 			}else{
-				//右一位是钻石
+				//右一位是卷轴
 				if(map[row][column+1]==SCROLL)
 				{
+					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANRIGHT;
 					map[row][column+1]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//钻石记数+1
-					diamondcount++;
+					//卷轴记数+1
+					ScrollCount++;
+					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column++;
 				}else{
 					//右一位是target
@@ -698,7 +669,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					{
 						Map currMap=new Map(row,column,map);
 						list.add(currMap);
-						//判断地图中是否还有钻石或者未完成的箱子
+						//判断地图中是否还有卷轴或者未完成的箱子
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
@@ -710,20 +681,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column]=grassOrEnd(map[row][column]);
 						column++;
 						}
-			}
+			    }ScrollFlag=false;
 			}		
 		}
 	}
 	
 	public boolean isFinished()
-	{
-		stopTimer();
-		for(int i=0;i<mapRow;i++)
-			for(int j=0;j<mapColumn;j++)
+	{  Log.i(TAG,"isfinished");
+		for(int i=0;i<mapRow;i++){
+			for(int j=0;j<mapColumn;j++){
 				//if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND||map[i][j]==TAGET)
-				if(map[i][j]==TARGETEND)
-					return true;
-		return false;				
+				if(map[i][j]==TARGET||map[i][j]==SCROLL||map[i][j]==END){
+					return false;//游戏不结束
+				}
+			}
+		}
+		return true;
 	}
 	
 	protected void paint(Canvas canvas)
@@ -836,6 +809,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	public byte [][] getMap()
 	{
 		return map;
+	}
+	public int getStepCount()
+	{
+		return StepCount;
+	}
+	public int getScrollCount()
+	{
+		return ScrollCount;
 	}
 
 }

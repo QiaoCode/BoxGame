@@ -1,6 +1,8 @@
 package com.box;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import TopCodes.Scanner;
 import TopCodes.TopCode;
@@ -9,11 +11,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.box.MapFactory;
 
@@ -24,15 +30,53 @@ public class GameMain extends Activity {
     /** Called when the activity is first created. */
 	//GameView界面，该界面功能为对本案例中的场景进行渲染
 	private GameView view=null;
+	private Button bt_menu;
 	private Button bt_run;
-	
+	//加入时间**************************
+    private static String TAG="Timer";
+    
+    private TextView mTextView=null;
+    
+    private Timer mTimer=null;
+    private TimerTask mTimerTask=null;
+    
+    private Handler mHandler=null;
+    
+    private static int count=0;
+    
+    private static int delay=1000;//1s
+    private static int period=1000;//1s
+    
+    private static final int UPDATE_TEXTVIEW=0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         //获得mainactivity中的视图
         view=(GameView)findViewById(R.id.gameView);
-        //设置按钮监听
+        //获得计时器数字，设置Handler
+        mTextView=(TextView)findViewById(R.id.clocktext);
+		mHandler=new Handler(){
+	    	public void handleMessage(Message msg){
+	    		switch (msg.what){
+	    		case UPDATE_TEXTVIEW:
+	    		    updateTextView();
+	    		    break;
+	    		default:
+	    			break;
+	    		}
+	    	}
+	    }; 
+	    //获得菜单按钮
+        bt_menu=(Button)findViewById(R.id.bt_menu);
+        bt_menu.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				view.undo();
+			}
+        });
+        //设置相机监听
         bt_run=(Button)findViewById(R.id.bt_run);
         bt_run.setOnClickListener(new OnClickListener(){
           	@Override
@@ -53,8 +97,56 @@ public class GameMain extends Activity {
     //将获得的图像存在Bitmap的bp中
 	 Bitmap bp=(Bitmap)data.getExtras().get("data");
  }
-   
-    
+   //设置计时器**************************
+    public void sendMessage(int id){  
+        if (mHandler != null) {  
+            Message message = Message.obtain(mHandler, id);     
+            mHandler.sendMessage(message);   
+        }  
+    }  
+	 protected void updateTextView() {
+	     mTextView.setText(String.valueOf(count));     
+	}
+	public void startTimer() {
+		 if (mTimer == null) {  
+	            mTimer = new Timer();  
+	        }  
+	  
+	     if (mTimerTask == null) {  
+	    	 mTimerTask = new TimerTask() {  
+	                @Override  
+	                public void run() {  
+	                    Log.i(TAG, "count: "+String.valueOf(count));  
+	                    sendMessage(UPDATE_TEXTVIEW);      
+	                    count ++;    
+	                }  
+	            };  
+	        }  
+	     if(mTimer != null && mTimerTask != null ) { 
+	           mTimer.schedule(mTimerTask, delay, period);
+	     }
+	     }
+	
+	public void stopTimer() {
+		if (mTimer != null) {  
+	            mTimer.cancel();  
+	            mTimer = null;  
+	        }  
+	  
+	        if (mTimerTask != null) {  
+	            mTimerTask.cancel();  
+	            mTimerTask = null;  
+	        }     
+	        count = 0;  	
+	}
+	//获得卷轴计数**************************
+    public int getScrollCount(){
+    	return view.ScrollCount;
+    }
+	//获得操作步数计数**************************
+    public int getSeptCount(){
+    	return view.StepCount;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	// TODO Auto-generated method stub
@@ -156,12 +248,18 @@ public class GameMain extends Activity {
     	editor.putInt("manX", view.getManX());
     	editor.putInt("manY", view.getManY());
     	editor.putInt("grade", view.getGrade());
+    	editor.putInt("StepCount", view.getStepCount());
+    	editor.putInt("ScrollCount", view.getScrollCount());
+    	editor.putInt("TimerCount", getTimerCount());
     	editor.putInt("row", row);
     	editor.putInt("column", column);
     	editor.putString("mapString", mapString.toString());
     	editor.commit();
     }
-    
+	public int getTimerCount()
+	{
+		return count;
+	}
    /* public  String getMapString(int index)
     {
     	String map="";
