@@ -23,9 +23,6 @@ import android.widget.TextView;
 
 import com.box.MapFactory;
 
-
-
-
 public class GameMain extends Activity {
     /** Called when the activity is first created. */
 	//GameView界面，该界面功能为对本案例中的场景进行渲染
