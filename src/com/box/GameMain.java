@@ -35,7 +35,7 @@ public class GameMain extends Activity {
 	//加入时间**************************
     private static String TAG="Timer";
     
-    private TextView mTextView=null;
+    private TextView ClockText=null;
     
     private Timer mTimer=null;
     private TimerTask mTimerTask=null;
@@ -47,8 +47,18 @@ public class GameMain extends Activity {
     private static int delay=1000;//1s
     private static int period=1000;//1s
     
-    private static final int UPDATE_TEXTVIEW=0;
-
+    private static final int UPDATE_CLOCKTEXT=0;
+    //加入卷轴数量和步数
+    private static String TAGS="ScrollOrStep";
+    private TextView ScrollText=null;
+    private TextView StepText=null;
+    private Handler aHandler=null;
+    private Handler bHandler=null;
+    private static int ScrollCount=0;
+    private static int StepCount=0;
+    private static final int UPDATE_SCROLLTEXT=0;
+    private static final int UPDATE_STEPTEXT=0;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +66,38 @@ public class GameMain extends Activity {
         //获得mainactivity中的视图
         view=(GameView)findViewById(R.id.gameView);
         //获得计时器数字，设置Handler
-        mTextView=(TextView)findViewById(R.id.clocktext);
+        ClockText=(TextView)findViewById(R.id.clocktext);
+        ScrollText=(TextView)findViewById(R.id.scrolltext);
+        StepText=(TextView)findViewById(R.id.steptext);
 		mHandler=new Handler(){
 	    	public void handleMessage(Message msg){
 	    		switch (msg.what){
-	    		case UPDATE_TEXTVIEW:
-	    		    updateTextView();
+	    		case UPDATE_CLOCKTEXT:
+	    		    updateClockText();
+	    		    break;
+	    		default:
+	    			break;
+	    		}
+	    	}
+	    }; 
+    	aHandler=new Handler(){
+	    	public void handleMessage(Message msg){
+	    		switch (msg.what){
+	    	    case UPDATE_SCROLLTEXT:
+	    		    updateScrollText();
+	    		    Log.e(TAGS,"UPDATE_SCROLLTEXT"+msg);
+	    		    break;
+	    		default:
+	    			break;
+	    		}
+	    	}
+	    }; 
+	    bHandler=new Handler(){
+	    	public void handleMessage(Message msg){
+	    		switch (msg.what){
+	    		case UPDATE_STEPTEXT:
+	    		    updateStepText();
+	    		    Log.e(TAGS,"UPDATE_STEPTEXT"+msg);
 	    		    break;
 	    		default:
 	    			break;
@@ -97,15 +133,51 @@ public class GameMain extends Activity {
     //将获得的图像存在Bitmap的bp中
 	 Bitmap bp=(Bitmap)data.getExtras().get("data");
  }
+  //获得卷轴计数**************************
+    public int getScrollCount(){
+    	return view.ScrollCount;
+    }
+    protected void updateScrollText() {
+	     ScrollText.setText(String.valueOf(getScrollCount()));
+	     Log.e(TAGS,"getscrollcount--"+ScrollText);
+	     sendScrollMessage(UPDATE_SCROLLTEXT);      
+	}
+    public void sendScrollMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
+        if (aHandler != null) {  
+            Message message = Message.obtain(aHandler, id); 
+            aHandler.sendMessage(message);   
+        }  
+    }  
+    public void startScroll() {
+    	sendScrollMessage(UPDATE_SCROLLTEXT);
+    }
+	//获得操作步数计数**************************
+    public int getStepCount(){
+    	return view.StepCount;
+    }
+    protected void updateStepText() {
+	     StepText.setText(String.valueOf(getStepCount()));
+	     Log.e(TAGS,"getstepcount--"+StepText);
+	     sendStepMessage(UPDATE_STEPTEXT);      
+	}
+    public void sendStepMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
+        if (bHandler != null) {  
+            Message message = Message.obtain(bHandler, id); 
+            bHandler.sendMessage(message);   
+        }  
+    }  
+    public void startStep() {
+    	sendStepMessage(UPDATE_STEPTEXT);
+    }
    //设置计时器**************************
-    public void sendMessage(int id){  
+    public void sendMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
         if (mHandler != null) {  
             Message message = Message.obtain(mHandler, id);     
             mHandler.sendMessage(message);   
         }  
     }  
-	 protected void updateTextView() {
-	     mTextView.setText(String.valueOf(count));     
+	 protected void updateClockText() {
+	     ClockText.setText(String.valueOf(count));     
 	}
 	public void startTimer() {
 		 if (mTimer == null) {  
@@ -116,8 +188,8 @@ public class GameMain extends Activity {
 	    	 mTimerTask = new TimerTask() {  
 	                @Override  
 	                public void run() {  
-	                    Log.i(TAG, "count: "+String.valueOf(count));  
-	                    sendMessage(UPDATE_TEXTVIEW);      
+	                    //Log.i(TAG, "count: "+String.valueOf(count));  
+	                    sendMessage(UPDATE_CLOCKTEXT);      
 	                    count ++;    
 	                }  
 	            };  
@@ -139,14 +211,7 @@ public class GameMain extends Activity {
 	        }     
 	        count = 0;  	
 	}
-	//获得卷轴计数**************************
-    public int getScrollCount(){
-    	return view.ScrollCount;
-    }
-	//获得操作步数计数**************************
-    public int getSeptCount(){
-    	return view.StepCount;
-    }
+	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	// TODO Auto-generated method stub

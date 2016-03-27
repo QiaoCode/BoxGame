@@ -14,7 +14,7 @@
  	>
  </com.box.GameView>
   
-      <Button
+      <ImageView
           android:id="@+id/bt_clock"
           android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
@@ -22,30 +22,47 @@
           android:background="@drawable/clock" />
       <TextView
           android:id="@+id/clocktext"
-           android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignBaseline="@id/bt_clock"
+          android:layout_alignBottom="@id/bt_clock"
           android:layout_toRightOf="@id/bt_clock"
-          android:text="@string/clockcount" />
-
-      <Button
+          android:text="@string/clockcount"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF"
+          />
+      <ImageView
           android:id="@+id/bt_scroll"
            android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_toRightOf="@id/clocktext"
           android:background="@drawable/scroll" />
-
       <TextView
           android:id="@+id/scrolltext"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignBaseline="@id/clocktext"
+          android:layout_toRightOf="@id/bt_scroll"
+          android:text="@string/scrollcount"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF" />
+      <ImageView
+          android:id="@+id/bt_step"
           android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignBaseline="@id/bt_scroll"
-          android:layout_toRightOf="@id/bt_scroll"
-          android:text="@string/scrollcount" />
-
+          android:layout_toRightOf="@id/scrolltext"
+          android:background="@drawable/step" />
+      <TextView
+          android:id="@+id/steptext"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignBaseline="@id/clocktext"
+          android:layout_toRightOf="@id/bt_step"
+          android:text="@string/stepcount"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF"
+          />
 
   
   <Button

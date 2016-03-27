@@ -302,6 +302,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			//向上
 			moveUp();
 			StepCount++;
+			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==20)
@@ -309,6 +310,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			//向下
 			moveDown();
 			StepCount++;
+			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==21)
@@ -316,6 +318,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			//向左
 			moveLeft();
 			StepCount++;
+			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==22)
@@ -323,6 +326,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			//向右
 			moveRight();
 			StepCount++;
+			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		repaint();
@@ -431,6 +435,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					//卷轴记数+1
 					ScrollCount++;
+					gameMain.startScroll();
 					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row--;
 				}else{
@@ -508,6 +513,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					//卷轴记数+1
 					ScrollCount++;
+					gameMain.startScroll();
 					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row++;
 				}else{
@@ -585,6 +591,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					//卷轴记数+1
 					ScrollCount++;
+					gameMain.startScroll();
 					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column--;
 				}else{
@@ -661,6 +668,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					//卷轴记数+1
 					ScrollCount++;
+					gameMain.startScroll();
 					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column++;
 				}else{
