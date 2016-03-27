@@ -106,6 +106,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				list.remove(list.size()-1);
 				if(ScrollFlag=true){
 					ScrollCount--;
+					gameMain.startScroll();
 				}
 			}
 			else
