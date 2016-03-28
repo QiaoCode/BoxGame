@@ -1,5 +1,8 @@
 package com.box;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,9 +13,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +35,7 @@ public class GameMain extends Activity {
 	private GameView view=null;
 	private Button bt_menu;
 	private Button bt_run;
+	private static String TAGC="Camera";
 	//加入时间**************************
     private static String TAG="Timer";
     
@@ -49,10 +56,9 @@ public class GameMain extends Activity {
     private static String TAGS="ScrollOrStep";
     private TextView ScrollText=null;
     private TextView StepText=null;
+	int ScrollCount=0;
     private Handler aHandler=null;
     private Handler bHandler=null;
-    private static int ScrollCount=0;
-    private static int StepCount=0;
     private static final int UPDATE_SCROLLTEXT=0;
     private static final int UPDATE_STEPTEXT=0;
     
@@ -112,17 +118,18 @@ public class GameMain extends Activity {
         //设置相机监听
         bt_run=(Button)findViewById(R.id.bt_run);
         bt_run.setOnClickListener(new OnClickListener(){
-          	@Override
+			@Override
           	public void onClick(View v){
-          		open();
+	            open();
 			}
     	});
     }	
     //设置一个intent，调用相机
     private void open() {
+    	    //拍完照startActivityForResult() 结果返回onActivityResult()函数
 			// TODO Auto-generated method stub
 			Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent,0);
+			startActivityForResult(intent,0);
     }
     //在新的activity中获得图片数据
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
@@ -132,11 +139,13 @@ public class GameMain extends Activity {
  }
   //获得卷轴计数**************************
     public int getScrollCount(){
-    	return view.ScrollCount;
+    	ScrollCount=view.ScrollCountAll-view.curScrollCount();
+    	Log.i(TAGS, "ScrollCount-->"+ScrollCount);
+    	return ScrollCount;
     }
     protected void updateScrollText() {
 	     ScrollText.setText(String.valueOf(getScrollCount()));
-	     Log.e(TAGS,"getscrollcount--"+ScrollText);
+	     Log.e(TAGS,"getscrollcount-->"+ScrollText);
 	     sendScrollMessage(UPDATE_SCROLLTEXT);      
 	}
     public void sendScrollMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
@@ -274,7 +283,7 @@ public class GameMain extends Activity {
     
     public void save()
     {
-    	//退出时保存游戏状态
+    	//退出时只保存关卡
     	//地图，关卡数
     	//Map map=new Map(view.getManX(),view.getManY(),view.getMap(),view.getGrade());
     	byte [][]map=view.getMap();
@@ -307,12 +316,13 @@ public class GameMain extends Activity {
     	SharedPreferences.Editor editor=pre.edit();
     	//用于更改位置、关数等状态
     	//SharedPreferences.Editor.putXX:向SharedPreferences里面存入指定的key对应的数值
-    	editor.putInt("manX", view.getManX());
-    	editor.putInt("manY", view.getManY());
+    	/*editor.putInt("manX", view.getManX());
+    	editor.putInt("manY", view.getManY());*/
     	editor.putInt("grade", view.getGrade());
+    	/*meeeeee
     	editor.putInt("StepCount", view.getStepCount());
-    	editor.putInt("ScrollCount", view.getScrollCount());
-    	editor.putInt("TimerCount", getTimerCount());
+    	editor.putInt("ScrollCount", getScrollCount());
+    	editor.putInt("TimerCount", getTimerCount());*/
     	editor.putInt("row", row);
     	editor.putInt("column", column);
     	editor.putString("mapString", mapString.toString());

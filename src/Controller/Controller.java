@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import TopCodes.TopCode;
 
 import com.box.GameMain;
 
@@ -11,19 +15,20 @@ public class Controller {
 //这个类用来读取图片上的指令，对人物进行控制
 	private byte[][] map=null;
 	//topcodes码
-	private ArrayList TopCodeList=new ArrayList();
+//	private ArrayList TopCodeList=new ArrayList();
 	//指令链表
 	private ArrayList InstructionList=new ArrayList();
 	//指令块信息链表
 	private ArrayList BlockInfoList=new ArrayList();
 	//定义当前的编译指令
 	private int CurrentInstruction=0;
-	
 	private Object BEGIN=0;
 	private Object END=1;
-
+	List<TopCode> TopCodeList =new ArrayList<TopCode>();
+	
 	//用来退出执行状态
     public void Exit(){
+
     	//所有的topcode和指令list都要清空
     	if(TopCodeList!=null){
     		/*if(TopCodeList.get(0)!=BEGIN||TopCodeList.get(TopCodeList.size()-1)!=END) {

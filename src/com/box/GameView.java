@@ -58,7 +58,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	private Bitmap game_bg;
 	//获得卷轴的记数
 	public int ScrollCount=0;
-	private boolean ScrollFlag=false;//撤销时用的
+	public int ScrollCountAll=0;
 	//获得步数的记数
 	public int StepCount=0;
 	//获得游戏结束的时间，保存恢复时使用
@@ -87,7 +87,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					break;
 				}
 	}
-	
+    public int curScrollCount(){
+    	int curScrollCount=0;
+    	for(int i=0;i<map.length;i++){
+			for(int j=0;j<map[0].length;j++){
+				if(map[i][j]==SCROLL)
+				{
+					curScrollCount++;
+				}}}
+    	return curScrollCount;
+    }
 	public void undo()
 	{
 		if(acceptKey)
@@ -103,11 +112,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				column=priorMap.getManY();
 				repaint();
 				StepCount--;
+				gameMain.getScrollCount();
 				list.remove(list.size()-1);
-				if(ScrollFlag=true){
-					ScrollCount--;
-					gameMain.startScroll();
-				}
 			}
 			else
 				
@@ -150,12 +156,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		map=gameMain.getMap(grade);
 		StepCount=0;//计数为0
-		ScrollCount=0;
 		list.clear();
 		Log.e(TAG,"timer开始");
 		gameMain.startTimer();
 		getMapSizeAndPosition();
 		getManPosition();
+		ScrollCountAll=0;
+		ScrollCountAll=getScrollCountAll();
+		
 //		Map currMap=new Map(row, column, map);
 //		list.add(currMap);
 	}
@@ -170,25 +178,27 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		else
 		{//否则换成用户上一局退出的情况
-		isFinished();//先检查是不是游戏已经结束
+		//isFinished();//先检查是不是游戏已经结束
 		Log.e(TAG,"timer开始");
 		gameMain.startTimer();
-		row=pre.getInt("manX", 0);//先从sharePreferences里面找key 为 “Age” 的数据， 如果有，说明你事先保存过， 那就取“Age”对应的值(事先保存过的值) ，如果没找到key为“Age” 的，被赋予默认值0 
+		/*row=pre.getInt("manX", 0);//先从sharePreferences里面找key 为 “Age” 的数据， 如果有，说明你事先保存过， 那就取“Age”对应的值(事先保存过的值) ，如果没找到key为“Age” 的，被赋予默认值0 
 		column=pre.getInt("manY", 0);
 		int rowCount=pre.getInt("row", 0);
-		int columnCount=pre.getInt("column", 0);
+		int columnCount=pre.getInt("column", 0);*/
 		grade=pre.getInt("grade", 0);
-		StepCount=pre.getInt("StepCount",0);
-		ScrollCount=pre.getInt("ScrollCount", 0);
-		map=new byte[rowCount][columnCount];
+		map=gameMain.getMap(grade);
+		list.clear();
+		getMapSizeAndPosition();
+		getManPosition();
+		ScrollCountAll=0;
+		ScrollCountAll=getScrollCountAll();
+		//StepCount=pre.getInt("StepCount",0);
+		//ScrollCount=pre.getInt("ScrollCount", 0);
+		/*map=new byte[rowCount][columnCount];
 		Log.e("mapString", mapString);
 		String str[]=mapString.split(",");
 		Log.e("str", str.toString());
-//		String d = "";
-//		for(int i=0; i<str.length; i++) {
-//			d += str[i];
-//		}
-//		char[] data = d.toCharArray();
+
 		int index=0;
 		//TODO 添加了i<str.length
 		for(int i=0;i<rowCount;i++) {
@@ -202,7 +212,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			}
 		}
 			
-		getMapSizeAndPosition();}
+		getMapSizeAndPosition();*/}
 		//getManPosition();不用获得人的位置，因为地图初始化可以直接完成人的位置的回归
 	}
 //构造方法
@@ -407,7 +417,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					//人离开后修改人的坐标
 					row--;
 				}
-			}ScrollFlag=false;
+			}
 		}
 		else
 		{
@@ -421,23 +431,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				map[row-1][column]=temp;
 				//人刚才站的地方变成GRASS或者END
 				map[row][column]=grassOrEnd(map[row][column]);
-				ScrollFlag=false;
 				//人离开后修改人的坐标
 				row--;
 			}else{
 				//上一位是卷轴
 				if(map[row-1][column]==SCROLL)
 				{
-					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANUP;
 					map[row-1][column]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//卷轴记数+1
-					ScrollCount++;
 					gameMain.startScroll();
-					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row--;
 				}else{
 					//上一位是target
@@ -456,7 +461,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row-1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row--;
-						}ScrollFlag=false;
+						}
 			}
 		}
 	  }
@@ -486,7 +491,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					row++;
 					
 				}
-			}ScrollFlag=false;
+			}
 		}
 		else
 		{
@@ -501,21 +506,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				row++;
-				ScrollFlag=false;
 			}else{
 				//下一位是卷轴
 				if(map[row+1][column]==SCROLL)
 				{
-					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANDOWN;
 					map[row+1][column]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//卷轴记数+1
-					ScrollCount++;
 					gameMain.startScroll();
-					Log.i(TAG,"ScrollCount"+ScrollCount);
 					row++;
 				}else{
 					//下一位是target
@@ -534,7 +534,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row+1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row++;
-						}ScrollFlag=false;
+						}
 			}
 			}		
 		}
@@ -564,7 +564,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					column--;
 					
 				}
-			}ScrollFlag=false;
+			}
 		}
 		else
 		{
@@ -579,21 +579,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column--;
-				ScrollFlag=false;
 			}else{
 				//左一位是卷轴
 				if(map[row][column-1]==SCROLL)
 				{
-					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANLEFT;
 					map[row][column-1]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//卷轴记数+1
-					ScrollCount++;
 					gameMain.startScroll();
-					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column--;
 				}else{
 					//左一位是target
@@ -611,7 +606,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column-1]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						column--;
-						}ScrollFlag=false;
+						}
 			}
 			}		
 		}
@@ -641,7 +636,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					column++;
 					
 				}
-			}ScrollFlag=false;
+			}
 		}
 		else
 		{
@@ -656,21 +651,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column++;
-				ScrollFlag=false;
 			}else{
 				//右一位是卷轴
 				if(map[row][column+1]==SCROLL)
 				{
-					ScrollFlag=true;
 					Map currMap=new Map(row,column,map);
 					list.add(currMap);
 					byte temp=MANRIGHT;
 					map[row][column+1]=temp;
 					map[row][column]=grassOrEnd(map[row][column]);
-					//卷轴记数+1
-					ScrollCount++;
 					gameMain.startScroll();
-					Log.i(TAG,"ScrollCount"+ScrollCount);
 					column++;
 				}else{
 					//右一位是target
@@ -690,7 +680,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column]=grassOrEnd(map[row][column]);
 						column++;
 						}
-			    }ScrollFlag=false;
+			    }
 			}		
 		}
 	}
@@ -823,9 +813,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		return StepCount;
 	}
-	public int getScrollCount()
-	{
-		return ScrollCount;
+	//遍历获得所有卷轴的数量
+	public int getScrollCountAll(){
+		for(int i=0;i<map.length;i++){
+			for(int j=0;j<map[0].length;j++){
+				if(map[i][j]==SCROLL)
+				{
+					ScrollCountAll++;
+				}}}
+		Log.i(VIEW_LOG_TAG, "scrollcountfull"+ScrollCountAll);
+		return ScrollCountAll;
 	}
 
 }
