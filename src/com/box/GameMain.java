@@ -31,12 +31,12 @@ import com.box.MapFactory;
 
 public class GameMain extends Activity {
     /** Called when the activity is first created. */
-	//GameView½çÃæ£¬¸Ã½çÃæ¹¦ÄÜÎª¶Ô±¾°¸ÀıÖĞµÄ³¡¾°½øĞĞäÖÈ¾
+	//GameViewç•Œé¢ï¼Œè¯¥ç•Œé¢åŠŸèƒ½ä¸ºå¯¹æœ¬æ¡ˆä¾‹ä¸­çš„åœºæ™¯è¿›è¡Œæ¸²æŸ“
 	private GameView view=null;
 	private Button bt_menu;
 	private Button bt_run;
 	private static String TAGC="Camera";
-	//¼ÓÈëÊ±¼ä**************************
+	//åŠ å…¥æ—¶é—´**************************
     private static String TAG="Timer";
     
     private TextView ClockText=null;
@@ -52,13 +52,13 @@ public class GameMain extends Activity {
     private static int period=1000;//1s
     
     private static final int UPDATE_CLOCKTEXT=0;
-    //¼ÓÈë¾íÖáÊıÁ¿ºÍ²½Êı
+    //åŠ å…¥å·è½´æ•°é‡å’Œæ­¥æ•°
     private static String TAGS="ScrollOrStep";
     private TextView ScrollText=null;
     private TextView StepText=null;
 	int ScrollCount=0;
-    private Handler aHandler=null;
-    private Handler bHandler=null;
+    private Handler aHandler=null;//ç”¨äºæ“ä½œè®¡æ•°
+    private Handler bHandler=null;//ç”¨äºå·è½´è®¡æ•°
     private static final int UPDATE_SCROLLTEXT=0;
     private static final int UPDATE_STEPTEXT=0;
     
@@ -66,9 +66,9 @@ public class GameMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        //»ñµÃmainactivityÖĞµÄÊÓÍ¼
+        //è·å¾—mainactivityä¸­çš„è§†å›¾
         view=(GameView)findViewById(R.id.gameView);
-        //»ñµÃ¼ÆÊ±Æ÷Êı×Ö£¬ÉèÖÃHandler
+        //è·å¾—è®¡æ—¶å™¨æ•°å­—ï¼Œè®¾ç½®Handler
         ClockText=(TextView)findViewById(R.id.clocktext);
         ScrollText=(TextView)findViewById(R.id.scrolltext);
         StepText=(TextView)findViewById(R.id.steptext);
@@ -107,15 +107,16 @@ public class GameMain extends Activity {
 	    		}
 	    	}
 	    }; 
-	    //»ñµÃ²Ëµ¥°´Å¥
+	    //è·å¾—èœå•æŒ‰é’®
         bt_menu=(Button)findViewById(R.id.bt_menu);
         bt_menu.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				view.undo();
+			//	view.undo();
+				openOptionsMenu();
 			}
         });
-        //ÉèÖÃÏà»ú¼àÌı
+        //è®¾ç½®ç›¸æœºç›‘å¬
         bt_run=(Button)findViewById(R.id.bt_run);
         bt_run.setOnClickListener(new OnClickListener(){
 			@Override
@@ -124,20 +125,20 @@ public class GameMain extends Activity {
 			}
     	});
     }	
-    //ÉèÖÃÒ»¸öintent£¬µ÷ÓÃÏà»ú
+    //è®¾ç½®ä¸€ä¸ªintentï¼Œè°ƒç”¨ç›¸æœº
     private void open() {
-    	    //ÅÄÍêÕÕstartActivityForResult() ½á¹û·µ»ØonActivityResult()º¯Êı
+    	    //æ‹å®Œç…§startActivityForResult() ç»“æœè¿”å›onActivityResult()å‡½æ•°
 			// TODO Auto-generated method stub
 			Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent,0);
     }
-    //ÔÚĞÂµÄactivityÖĞ»ñµÃÍ¼Æ¬Êı¾İ
+    //åœ¨æ–°çš„activityä¸­è·å¾—å›¾ç‰‡æ•°æ®
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
     	super.onActivityResult(requestCode, resultCode, data);
-    //½«»ñµÃµÄÍ¼Ïñ´æÔÚBitmapµÄbpÖĞ
+    //å°†è·å¾—çš„å›¾åƒå­˜åœ¨Bitmapçš„bpä¸­
 	 Bitmap bp=(Bitmap)data.getExtras().get("data");
  }
-  //»ñµÃ¾íÖá¼ÆÊı**************************
+  //è·å¾—å·è½´è®¡æ•°**************************
     public int getScrollCount(){
     	ScrollCount=view.ScrollCountAll-view.curScrollCount();
     	Log.i(TAGS, "ScrollCount-->"+ScrollCount);
@@ -148,7 +149,7 @@ public class GameMain extends Activity {
 	     Log.e(TAGS,"getscrollcount-->"+ScrollText);
 	     sendScrollMessage(UPDATE_SCROLLTEXT);      
 	}
-    public void sendScrollMessage(int id){ //µ÷ÓÃµÄÊÇHandlerÖĞµÄsendMessage(Message msg) 
+    public void sendScrollMessage(int id){ //è°ƒç”¨çš„æ˜¯Handlerä¸­çš„sendMessage(Message msg) 
         if (aHandler != null) {  
             Message message = Message.obtain(aHandler, id); 
             aHandler.sendMessage(message);   
@@ -157,7 +158,7 @@ public class GameMain extends Activity {
     public void startScroll() {
     	sendScrollMessage(UPDATE_SCROLLTEXT);
     }
-	//»ñµÃ²Ù×÷²½Êı¼ÆÊı**************************
+	//è·å¾—æ“ä½œæ­¥æ•°è®¡æ•°**************************
     public int getStepCount(){
     	return view.StepCount;
     }
@@ -166,7 +167,7 @@ public class GameMain extends Activity {
 	     Log.e(TAGS,"getstepcount--"+StepText);
 	     sendStepMessage(UPDATE_STEPTEXT);      
 	}
-    public void sendStepMessage(int id){ //µ÷ÓÃµÄÊÇHandlerÖĞµÄsendMessage(Message msg) 
+    public void sendStepMessage(int id){ //è°ƒç”¨çš„æ˜¯Handlerä¸­çš„sendMessage(Message msg) 
         if (bHandler != null) {  
             Message message = Message.obtain(bHandler, id); 
             bHandler.sendMessage(message);   
@@ -175,8 +176,8 @@ public class GameMain extends Activity {
     public void startStep() {
     	sendStepMessage(UPDATE_STEPTEXT);
     }
-   //ÉèÖÃ¼ÆÊ±Æ÷**************************
-    public void sendMessage(int id){ //µ÷ÓÃµÄÊÇHandlerÖĞµÄsendMessage(Message msg) 
+   //è®¾ç½®è®¡æ—¶å™¨**************************
+    public void sendMessage(int id){ //è°ƒç”¨çš„æ˜¯Handlerä¸­çš„sendMessage(Message msg) 
         if (mHandler != null) {  
             Message message = Message.obtain(mHandler, id);     
             mHandler.sendMessage(message);   
@@ -221,11 +222,12 @@ public class GameMain extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	// TODO Auto-generated method stub
-    	menu.add(0,0,0,"ÉÏÒ»¹Ø");
-    	menu.add(0,1,0,"ÏÂÒ»¹Ø");
-    	menu.add(0,2,0,"³·Ïú");
-    	menu.add(0,3,0,"·µ»Ø");
-    	menu.add(0,4,0,"ÍË³ö");
+    	menu.add(0,0,0,"ä¸Šä¸€å…³");
+    	//menu.add(Menu.NONE, Menu.First+1, 0, "è®¾ç½®").setIcon(R.drawable.setting);
+    	menu.add(0,1,0,"ä¸‹ä¸€å…³");
+    	menu.add(0,2,0,"æ’¤é”€");
+    	menu.add(0,3,0,"è¿”å›");
+    	menu.add(0,4,0,"é€€å‡º");
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -235,11 +237,11 @@ public class GameMain extends Activity {
     	switch(item.getItemId())
     	{
     	case 0:
-    		//ÉÏÒ»¹Ø
+    		//ä¸Šä¸€å…³
     		view.priorGrade();
     		break;
     	case 1:
-    		//ÏÂÒ»¹Ø
+    		//ä¸‹ä¸€å…³
     		view.nextGrade();
     		break;
     	case 2:
@@ -277,22 +279,22 @@ public class GameMain extends Activity {
     protected void onStop() {
     	// TODO Auto-generated method stub
     	super.onStop();
-    	//ÍË³öÊ±±£´æÓÎÏ·×´Ì¬
+    	//é€€å‡ºæ—¶ä¿å­˜æ¸¸æˆçŠ¶æ€
     	save();
     }
     
     public void save()
     {
-    	//ÍË³öÊ±Ö»±£´æ¹Ø¿¨
-    	//µØÍ¼£¬¹Ø¿¨Êı
+    	//é€€å‡ºæ—¶åªä¿å­˜å…³å¡
+    	//åœ°å›¾ï¼Œå…³å¡æ•°
     	//Map map=new Map(view.getManX(),view.getManY(),view.getMap(),view.getGrade());
     	byte [][]map=view.getMap();
     	int row=map.length;
     	int column=map[0].length;
-    	//Ê¹ÓÃ¹¹Ôì·½·¨½øĞĞ³õÊ¼»¯,ÕâÑù³õÊ¼»¯³öµÄStringBuffer¶ÔÏóÊÇÒ»¸ö¿ÕµÄ¶ÔÏó¡£
+    	//ä½¿ç”¨æ„é€ æ–¹æ³•è¿›è¡Œåˆå§‹åŒ–,è¿™æ ·åˆå§‹åŒ–å‡ºçš„StringBufferå¯¹è±¡æ˜¯ä¸€ä¸ªç©ºçš„å¯¹è±¡ã€‚
     	StringBuffer mapString=new StringBuffer();
-    	//mapString×îÖÕ¸ñÊ½
-    	//ĞĞÓÅÏÈ´æ´¢£¬Á½Á½Ö®¼ä¶ººÅ¸ô¿ª
+    	//mapStringæœ€ç»ˆæ ¼å¼
+    	//è¡Œä¼˜å…ˆå­˜å‚¨ï¼Œä¸¤ä¸¤ä¹‹é—´é€—å·éš”å¼€
     /*	mapString.append(row);
     	mapString.append(",");
     	mapString.append(column);
@@ -304,18 +306,18 @@ public class GameMain extends Activity {
     			mapString.append(",");
     		}
     	}
-    	//×îºó¶à¼ÓÁËÒ»¸ö¶ººÅ£¬½âÎöÊ±×¢Òâ
-    	/*ºÜ¶àÊ±ºòÎÒÃÇ¿ª·¢µÄÈí¼şĞèÒªÏòÓÃ»§Ìá¹©Èí¼ş²ÎÊıÉèÖÃ¹¦ÄÜ£¬
-    	 * AndroidÆ½Ì¨¸øÎÒÃÇÌá¹©ÁËÒ»¸öSharedPreferencesÀà£¬
-    	 * ËüÊÇÒ»¸öÇáÁ¿¼¶µÄ´æ´¢Àà£¬ÌØ±ğÊÊºÏÓÃÓÚ±£´æÈí¼şÅäÖÃ²ÎÊı¡£
-    	 * Ê¹ÓÃSharedPreferences±£´æÊı¾İ£¬Æä±³ºóÊÇÓÃxmlÎÄ¼ş´æ·ÅÊı¾İ£¬
-    	 * ÎÄ¼ş´æ·ÅÔÚ/data/data/<package name>/shared_prefsÄ¿Â¼ÏÂ
+    	//æœ€åå¤šåŠ äº†ä¸€ä¸ªé€—å·ï¼Œè§£ææ—¶æ³¨æ„
+    	/*å¾ˆå¤šæ—¶å€™æˆ‘ä»¬å¼€å‘çš„è½¯ä»¶éœ€è¦å‘ç”¨æˆ·æä¾›è½¯ä»¶å‚æ•°è®¾ç½®åŠŸèƒ½ï¼Œ
+    	 * Androidå¹³å°ç»™æˆ‘ä»¬æä¾›äº†ä¸€ä¸ªSharedPreferencesç±»ï¼Œ
+    	 * å®ƒæ˜¯ä¸€ä¸ªè½»é‡çº§çš„å­˜å‚¨ç±»ï¼Œç‰¹åˆ«é€‚åˆç”¨äºä¿å­˜è½¯ä»¶é…ç½®å‚æ•°ã€‚
+    	 * ä½¿ç”¨SharedPreferencesä¿å­˜æ•°æ®ï¼Œå…¶èƒŒåæ˜¯ç”¨xmlæ–‡ä»¶å­˜æ”¾æ•°æ®ï¼Œ
+    	 * æ–‡ä»¶å­˜æ”¾åœ¨/data/data/<package name>/shared_prefsç›®å½•ä¸‹
     	 */
     	SharedPreferences pre=getSharedPreferences("map", 0);
-    	//»ñÈ¡±à¼­Æ÷
+    	//è·å–ç¼–è¾‘å™¨
     	SharedPreferences.Editor editor=pre.edit();
-    	//ÓÃÓÚ¸ü¸ÄÎ»ÖÃ¡¢¹ØÊıµÈ×´Ì¬
-    	//SharedPreferences.Editor.putXX:ÏòSharedPreferencesÀïÃæ´æÈëÖ¸¶¨µÄkey¶ÔÓ¦µÄÊıÖµ
+    	//ç”¨äºæ›´æ”¹ä½ç½®ã€å…³æ•°ç­‰çŠ¶æ€
+    	//SharedPreferences.Editor.putXX:å‘SharedPreferencesé‡Œé¢å­˜å…¥æŒ‡å®šçš„keyå¯¹åº”çš„æ•°å€¼
     	/*editor.putInt("manX", view.getManX());
     	editor.putInt("manY", view.getManY());*/
     	editor.putInt("grade", view.getGrade());

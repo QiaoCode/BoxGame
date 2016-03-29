@@ -10,8 +10,6 @@ import android.graphics.Bitmap;
  * for a TopCode bullseye patterns.  If the pattern matches and the
  * black and white regions meet certain ratio constraints, then the
  * pixel is tested as the center of a candidate TopCode.
- *载入扫描Topcodes图片，该算法是做一个图像的扫描（在一定时间水平的扫描）寻找topcodes的圆心
- *如果这个模式匹配，而且黑色和白色区域满足一定比例限制，然后测试以像素为中心作为一个topcode候选。
  * @author Michael Horn
  */ 
 public class Scanner {
@@ -52,7 +50,6 @@ public class Scanner {
 
 /**
  * Scan the given image and return a list of all topcodes found in it.
- 扫描给定的图片并返回里面所有topcodes列表
  */
    public List<TopCode> scan(Bitmap image) {
       this.w       = image.getWidth();

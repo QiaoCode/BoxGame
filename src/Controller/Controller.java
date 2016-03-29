@@ -12,44 +12,44 @@ import TopCodes.TopCode;
 import com.box.GameMain;
 
 public class Controller {
-//Õâ¸öÀàÓÃÀ´¶ÁÈ¡Í¼Æ¬ÉÏµÄÖ¸Áî£¬¶ÔÈËÎï½øĞĞ¿ØÖÆ
+//è¿™ä¸ªç±»ç”¨æ¥è¯»å–å›¾ç‰‡ä¸Šçš„æŒ‡ä»¤ï¼Œå¯¹äººç‰©è¿›è¡Œæ§åˆ¶
 	private byte[][] map=null;
-	//topcodesÂë
+	//topcodesç 
 //	private ArrayList TopCodeList=new ArrayList();
-	//Ö¸ÁîÁ´±í
+	//æŒ‡ä»¤é“¾è¡¨
 	private ArrayList InstructionList=new ArrayList();
-	//Ö¸Áî¿éĞÅÏ¢Á´±í
+	//æŒ‡ä»¤å—ä¿¡æ¯é“¾è¡¨
 	private ArrayList BlockInfoList=new ArrayList();
-	//¶¨Òåµ±Ç°µÄ±àÒëÖ¸Áî
+	//å®šä¹‰å½“å‰çš„ç¼–è¯‘æŒ‡ä»¤
 	private int CurrentInstruction=0;
 	private Object BEGIN=0;
 	private Object END=1;
 	List<TopCode> TopCodeList =new ArrayList<TopCode>();
 	
-	//ÓÃÀ´ÍË³öÖ´ĞĞ×´Ì¬
+	//ç”¨æ¥é€€å‡ºæ‰§è¡ŒçŠ¶æ€
     public void Exit(){
 
-    	//ËùÓĞµÄtopcodeºÍÖ¸Áîlist¶¼ÒªÇå¿Õ
+    	//æ‰€æœ‰çš„topcodeå’ŒæŒ‡ä»¤listéƒ½è¦æ¸…ç©º
     	if(TopCodeList!=null){
     		/*if(TopCodeList.get(0)!=BEGIN||TopCodeList.get(TopCodeList.size()-1)!=END) {
-    			Èç¹ûtopcodesÂëµÄlist×îÇ°µÄÔªËØºÍ×îºóµÄÔªËØ²»ÊÇ¿ªÊ¼ºÍ½áÊø£¬ÔòÉ¾³ılist*/
+    			å¦‚æœtopcodesç çš„listæœ€å‰çš„å…ƒç´ å’Œæœ€åçš„å…ƒç´ ä¸æ˜¯å¼€å§‹å’Œç»“æŸï¼Œåˆ™åˆ é™¤list*/
     		TopCodeList.clear();
     	}
-//±àÒëºóµÄ³ÌĞòÖ¸Áî¶¼ÒªÇå¿Õ
+//ç¼–è¯‘åçš„ç¨‹åºæŒ‡ä»¤éƒ½è¦æ¸…ç©º
     	if(InstructionList.size()!=0){
     		InstructionList.clear();
     	}
     	
     }
-    //ÅĞ¶ÏÔ¤Â·Ïß£¬¿´¿´Â·ÏßÉÏÊÇ·ñÓĞ´íÎó
+    //åˆ¤æ–­é¢„è·¯çº¿ï¼Œçœ‹çœ‹è·¯çº¿ä¸Šæ˜¯å¦æœ‰é”™è¯¯
     public void PreExe(){
     	try
-    	{   int tempWhileStart;//ÁÙÊ±¿ªÊ¼µÄÎ»ÖÃ
+    	{   int tempWhileStart;//ä¸´æ—¶å¼€å§‹çš„ä½ç½®
     		CurrentInstruction=0;
-    		int CurrentBlock=0;//µ±Ç°µÄ±à³Ì¿é
-    	/*	if(Read()==-1)	//¶ÁÈ¡Í¼Æ¬ĞÅÏ¢Ö¸Áî²¢×ª»»Îª³ÌĞò´úÂë
+    		int CurrentBlock=0;//å½“å‰çš„ç¼–ç¨‹å—
+    	/*	if(Read()==-1)	//è¯»å–å›¾ç‰‡ä¿¡æ¯æŒ‡ä»¤å¹¶è½¬æ¢ä¸ºç¨‹åºä»£ç 
     		{	
-    			CurrentInstruction = 10000;	//Ã»ÓĞÄ¾¿é
+    			CurrentInstruction = 10000;	//æ²¡æœ‰æœ¨å—
     			return errorInfo(1000);
     		}
     		if (m_InstructionList.size()!=0)
@@ -66,14 +66,14 @@ public class Controller {
 		// TODO Auto-generated method stub
 		return null;
 	}
-//ÓÃÀ´¶ÁÈ¡ºÍ²¶×½ÉãÏñÍ·Í¼Æ¬£¬²¢×ö´úÂë×ª»¯
+//ç”¨æ¥è¯»å–å’Œæ•æ‰æ‘„åƒå¤´å›¾ç‰‡ï¼Œå¹¶åšä»£ç è½¬åŒ–
 	private int Read() {
 		// TODO Auto-generated method stub
 		try{
-			Capture();//²¶×½ÉãÏñÍ·Í¼Æ¬
-			ConverCode();//½«Í¼Æ¬×ö´úÂë×ª»¯
+			Capture();//æ•æ‰æ‘„åƒå¤´å›¾ç‰‡
+			ConverCode();//å°†å›¾ç‰‡åšä»£ç è½¬åŒ–
 
-			//³õÊ¼»¯Êı×é ¶ÔÊı×é½øĞĞÇå¿Õ
+			//åˆå§‹åŒ–æ•°ç»„ å¯¹æ•°ç»„è¿›è¡Œæ¸…ç©º
 			if(InstructionList.size() > 0)
 			{
 				InstructionList.clear();
@@ -90,7 +90,7 @@ private void ConverCode() {
 }
 private void Capture() {
 	// TODO Auto-generated method stub
-	//»ñµÃGameMainÖĞµÄBitmap bp
+	//è·å¾—GameMainä¸­çš„Bitmap bp
 	
 	
 }

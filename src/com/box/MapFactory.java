@@ -1,8 +1,8 @@
 package com.box;
 
 public class MapFactory {
-//1Î§Ç½ 2»ÆÏä×Ó£¨Î´½øÄ¿µÄµØ£©3ºìÏä×Ó£¨½øÁËÄ¿µÄµØ£©4Ä¿µÄµØ 5-8Ğ¡ÈË£¬9µØÃæ£¬10-13½øÈëÄ¿µÄµØµÄĞ¡ÈË,14×êÊ¯,17ÖÕµã
-//mapÊÇ20¸ö¶şÎ»Êı×é
+//1å›´å¢™ 2é»„ç®±å­ï¼ˆæœªè¿›ç›®çš„åœ°ï¼‰3çº¢ç®±å­ï¼ˆè¿›äº†ç›®çš„åœ°ï¼‰4ç›®çš„åœ° 5-8å°äººï¼Œ9åœ°é¢ï¼Œ10-13è¿›å…¥ç›®çš„åœ°çš„å°äºº,14é’»çŸ³,17ç»ˆç‚¹
+//mapæ˜¯20ä¸ªäºŒä½æ•°ç»„
 	static byte map[][][]={
 			{//1
 			{ 0, 0, 1,  1,  1, 0, 0, 0 },
@@ -212,7 +212,7 @@ public class MapFactory {
 		
 	};
 	
-	static int count=map.length;//»ñµÃÊı×émapµÄ³¤¶È£¨ËùÓĞ¹Ø¿¨µÄÊıÁ¿£©
+	static int count=map.length;//è·å¾—æ•°ç»„mapçš„é•¿åº¦ï¼ˆæ‰€æœ‰å…³å¡çš„æ•°é‡ï¼‰
 	
 	/*public static byte[][] getMap(int grade)
 	{
@@ -220,17 +220,17 @@ public class MapFactory {
 			return map[grade].clone();
 		return map[0].clone();
 	}*/
-	//Ã¿Ò»¹Ø·Ö±ğ»ñµÃ¶şÎ¬Êı×éµØÍ¼£¬´æ·ÅÔÚtemp[][]
+	//æ¯ä¸€å…³åˆ†åˆ«è·å¾—äºŒç»´æ•°ç»„åœ°å›¾ï¼Œå­˜æ”¾åœ¨temp[][]
 	public static byte[][] getMap(int grade)
 	{   byte temp[][];
 		if(grade>=0 && grade<count)
-			temp=map[grade];//µ÷³ömap[µÚ¼¸¹Ø¿¨]µØÍ¼
+			temp=map[grade];//è°ƒå‡ºmap[ç¬¬å‡ å…³å¡]åœ°å›¾
 		else
 			temp=map[0];
-		//»ñµÃµØÍ¼µÄ³¤ºÍ¿í
+		//è·å¾—åœ°å›¾çš„é•¿å’Œå®½
 		int row=temp.length;
 		int column=temp[0].length;
-		//ĞÂ½¨×Ö½ÚĞÍÊı×éresult,·ÅÈëtempÊı×é
+		//æ–°å»ºå­—èŠ‚å‹æ•°ç»„result,æ”¾å…¥tempæ•°ç»„
 		byte[][] result=new byte[row][column];
 		for(int i=0;i<row;i++)
 			for(int j=0;j<column;j++)

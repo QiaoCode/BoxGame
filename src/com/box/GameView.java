@@ -37,42 +37,42 @@ import android.widget.Toast;
 import com.box.Map;
 import com.box.MapFactory;
 
-//²¼¾ÖÊ¹ÓÃRelativeLayout»òFrameLayout,È»ºóview¿í¸ß¾ùÎªmatch_parent £¬µşÔÚËùÓĞviewµÄÏÂ²ã
+//å¸ƒå±€ä½¿ç”¨RelativeLayoutæˆ–FrameLayout,ç„¶åviewå®½é«˜å‡ä¸ºmatch_parent ï¼Œå åœ¨æ‰€æœ‰viewçš„ä¸‹å±‚
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGestureListener,OnTouchListener{
 	
 	private static String TAG="GameCount";
 	private SurfaceHolder holder;
 	private int grade=0;
-	//row,column¼ÇÔØÈËµÄĞĞºÅ ÁĞºÅ
-	//leftX,leftY ¼ÇÔØ×óÉÏ½ÇÍ¼Æ¬µÄÎ»ÖÃ  ±ÜÃâÍ¼Æ¬´Ó(0,0)×ø±ê¿ªÊ¼
+	//row,columnè®°è½½äººçš„è¡Œå· åˆ—å·
+	//leftX,leftY è®°è½½å·¦ä¸Šè§’å›¾ç‰‡çš„ä½ç½®  é¿å…å›¾ç‰‡ä»(0,0)åæ ‡å¼€å§‹
 	private int row=7,column=7,leftX=0,leftY=0;
-	//¼ÇÔØµØÍ¼µÄĞĞÁĞÊı
+	//è®°è½½åœ°å›¾çš„è¡Œåˆ—æ•°
 	private int mapRow=0,mapColumn=0;
-	//width,height ¼ÇÔØÆÁÄ»µÄ´óĞ¡
+	//width,height è®°è½½å±å¹•çš„å¤§å°
 	private int width=0,height=0;
-	//acceptKeyÅĞ¶Ï°´¼üÊÂ¼ş
+	//acceptKeyåˆ¤æ–­æŒ‰é”®äº‹ä»¶
 	private boolean acceptKey=true;
-	//³ÌĞòËùÓÃµ½µÄÍ¼Æ¬
+	//ç¨‹åºæ‰€ç”¨åˆ°çš„å›¾ç‰‡
 	private Bitmap pic[]=null;
 	private Bitmap game_bg;
-	//»ñµÃ¾íÖáµÄ¼ÇÊı
+	//è·å¾—å·è½´çš„è®°æ•°
 	public int ScrollCount=0;
 	public int ScrollCountAll=0;
-	//»ñµÃ²½ÊıµÄ¼ÇÊı
+	//è·å¾—æ­¥æ•°çš„è®°æ•°
 	public int StepCount=0;
-	//»ñµÃÓÎÏ·½áÊøµÄÊ±¼ä£¬±£´æ»Ö¸´Ê±Ê¹ÓÃ
+	//è·å¾—æ¸¸æˆç»“æŸçš„æ—¶é—´
 	public int TimerCount=0;
-	//¶¨ÒåÒ»Ğ©³£Á¿£¬¶ÔÓ¦µØÍ¼µÄÔªËØ
+	//å®šä¹‰ä¸€äº›å¸¸é‡ï¼Œå¯¹åº”åœ°å›¾çš„å…ƒç´ 
 	final byte WALL=1,BOX=2,BOXONEND=3,END=4,MANDOWN=5,MANLEFT=6,MANRIGHT=7,
 			MANUP=8,GRASS=9,MANDOWNONEND=10,MANLEFTONEND=11,MANRIGHTONEND=12,
 			MANUPONEND=13,SCROLL=14,WATER=15,WATEREND=16,TARGET=17,TARGETEND=18,
 			TARGETDOWN=19,TARGETLEFT=20,TARGETRIGHT=21,TARGETUP=22;
-	//waterºÍwaterendÔİÊ±ÓÃ²»µ½
+	//waterå’Œwaterendæš‚æ—¶ç”¨ä¸åˆ°
 	private Paint paint=null;
 	private GameMain gameMain=null;
 	private byte[][] map=null;
-	//ÓÃÀ´´æ´¢Ã¿¸ö²½ÖèºóµÄµØÍ¼ĞÅÏ¢£¨ÓÃÀ´³·Ïú£©
+	//ç”¨æ¥å­˜å‚¨æ¯ä¸ªæ­¥éª¤åçš„åœ°å›¾ä¿¡æ¯ï¼ˆç”¨æ¥æ’¤é”€ï¼‰
 	private ArrayList list=new ArrayList();
 	private GestureDetector mGestureDetector;
 	
@@ -101,10 +101,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		if(acceptKey)
 		{
-			//³·Ïú
+			//æ’¤é”€
 			if(list.size()>0)
 			{
-				//ÈôÒª³·Ïú ±ØĞë×ß¹ı
+				//è‹¥è¦æ’¤é”€ å¿…é¡»èµ°è¿‡
 //				Map priorMap=(Map)list.get(list.size()-1);
 				Map priorMap=(Map)list.get(list.size()-1);
 				map=priorMap.getMap();
@@ -117,20 +117,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			}
 			else
 				
-				Toast.makeText(this.getContext(), "²»ÄÜÔÙ³·Ïú£¡", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this.getContext(), "ä¸èƒ½å†æ’¤é”€ï¼", Toast.LENGTH_SHORT).show();
 		}
 		else
 		{
-			Toast.makeText(this.getContext(), "´Ë¹ØÒÑÍê³É£¬²»ÄÜ³·Ïú£¡", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this.getContext(), "æ­¤å…³å·²å®Œæˆï¼Œä¸èƒ½æ’¤é”€ï¼", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
 	public void nextGrade()
 	{
 		//grade++;
+		gameMain.stopTimer();	
 		if(grade>=MapFactory.getCount()-1)
 			{
-			Toast.makeText(this.getContext(), "¹§Ï²ÄãÍê³ÉËùÓĞ¹Ø¿¨£¡", Toast.LENGTH_LONG).show();
+			Toast.makeText(this.getContext(), "æ­å–œä½ å®Œæˆæ‰€æœ‰å…³å¡ï¼", Toast.LENGTH_LONG).show();
 			acceptKey=false;
 			}
 		else
@@ -144,6 +145,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	public void priorGrade()
 	{
+		gameMain.stopTimer();	
 		grade--;
 		acceptKey=true;
 		if(grade<0)
@@ -151,45 +153,43 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		initMap();
 		repaint();
 	}
-	//´´Ôì
+	//åˆ›é€ 
 	public void initMap()
 	{
 		map=gameMain.getMap(grade);
-		StepCount=0;//¼ÆÊıÎª0
+		StepCount=0;//è®¡æ•°ä¸º0
 		list.clear();
-		Log.e(TAG,"timer¿ªÊ¼");
+		Log.e(TAG,"timerå¼€å§‹");
 		gameMain.startTimer();
 		getMapSizeAndPosition();
 		getManPosition();
-		ScrollCountAll=0;
+		ScrollCountAll=0;//æ¸…é›¶
 		ScrollCountAll=getScrollCountAll();
-		
-//		Map currMap=new Map(row, column, map);
-//		list.add(currMap);
+
 	}
 	
 	public void resumeGame()
-	{//·ÃÎÊSharedPreferencesÖĞµÄÊı¾İ
+	{//è®¿é—®SharedPreferencesä¸­çš„æ•°æ®
 		SharedPreferences pre=this.getContext().getSharedPreferences("map", 0);
-		//getString()µÚ¶ş¸ö²ÎÊıÎªÈ±Ê¡Öµ£¬Èç¹ûpreferenceÖĞ²»´æÔÚ¸Ãkey£¬½«·µ»ØÈ±Ê¡Öµ
+		//getString()ç¬¬äºŒä¸ªå‚æ•°ä¸ºç¼ºçœå€¼ï¼Œå¦‚æœpreferenceä¸­ä¸å­˜åœ¨è¯¥keyï¼Œå°†è¿”å›ç¼ºçœå€¼
 		String mapString=pre.getString("mapString", "");
 		if(mapString.equals("")){
 			initMap();
 		}
 		else
-		{//·ñÔò»»³ÉÓÃ»§ÉÏÒ»¾ÖÍË³öµÄÇé¿ö
-		//isFinished();//ÏÈ¼ì²éÊÇ²»ÊÇÓÎÏ·ÒÑ¾­½áÊø
-		Log.e(TAG,"timer¿ªÊ¼");
+		{//å¦åˆ™æ¢æˆç”¨æˆ·ä¸Šä¸€å±€é€€å‡ºçš„æƒ…å†µ
+		Log.e(TAG,"timerå¼€å§‹");
 		gameMain.startTimer();
-		/*row=pre.getInt("manX", 0);//ÏÈ´ÓsharePreferencesÀïÃæÕÒkey Îª ¡°Age¡± µÄÊı¾İ£¬ Èç¹ûÓĞ£¬ËµÃ÷ÄãÊÂÏÈ±£´æ¹ı£¬ ÄÇ¾ÍÈ¡¡°Age¡±¶ÔÓ¦µÄÖµ(ÊÂÏÈ±£´æ¹ıµÄÖµ) £¬Èç¹ûÃ»ÕÒµ½keyÎª¡°Age¡± µÄ£¬±»¸³ÓèÄ¬ÈÏÖµ0 
+		/*row=pre.getInt("manX", 0);//å…ˆä»sharePreferencesé‡Œé¢æ‰¾key ä¸º â€œAgeâ€ çš„æ•°æ®ï¼Œ å¦‚æœæœ‰ï¼Œè¯´æ˜ä½ äº‹å…ˆä¿å­˜è¿‡ï¼Œ é‚£å°±å–â€œAgeâ€å¯¹åº”çš„å€¼(äº‹å…ˆä¿å­˜è¿‡çš„å€¼) ï¼Œå¦‚æœæ²¡æ‰¾åˆ°keyä¸ºâ€œAgeâ€ çš„ï¼Œè¢«èµ‹äºˆé»˜è®¤å€¼0 
 		column=pre.getInt("manY", 0);
 		int rowCount=pre.getInt("row", 0);
 		int columnCount=pre.getInt("column", 0);*/
 		grade=pre.getInt("grade", 0);
 		map=gameMain.getMap(grade);
-		list.clear();
+		list.clear();//æ­¥æ•°æ¸…é›¶çš„åŸå› ï¼Ÿ
 		getMapSizeAndPosition();
 		getManPosition();
+		
 		ScrollCountAll=0;
 		ScrollCountAll=getScrollCountAll();
 		//StepCount=pre.getInt("StepCount",0);
@@ -200,7 +200,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		Log.e("str", str.toString());
 
 		int index=0;
-		//TODO Ìí¼ÓÁËi<str.length
+		//TODO æ·»åŠ äº†i<str.length
 		for(int i=0;i<rowCount;i++) {
 			
 			for(int j=0;j<columnCount;j++)
@@ -213,16 +213,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 			
 		getMapSizeAndPosition();*/}
-		//getManPosition();²»ÓÃ»ñµÃÈËµÄÎ»ÖÃ£¬ÒòÎªµØÍ¼³õÊ¼»¯¿ÉÒÔÖ±½ÓÍê³ÉÈËµÄÎ»ÖÃµÄ»Ø¹é
+		//getManPosition();ä¸ç”¨è·å¾—äººçš„ä½ç½®ï¼Œå› ä¸ºåœ°å›¾åˆå§‹åŒ–å¯ä»¥ç›´æ¥å®Œæˆäººçš„ä½ç½®çš„å›å½’
 	}
-//¹¹Ôì·½·¨
+//æ„é€ æ–¹æ³•
 	public GameView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		gameMain=(GameMain)context;
 		getPic();
-		//ÊµÀıholder
+		//å®ä¾‹holder
 		holder=this.getHolder();
-		//Ìí¼Ó¼àÌı
+		//æ·»åŠ ç›‘å¬
 		holder.addCallback(this);
 		this.setOnTouchListener(this);
 		this.setLongClickable(true);
@@ -230,13 +230,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		width=manager.getDefaultDisplay().getWidth();
 		height=manager.getDefaultDisplay().getHeight();
 		this.setFocusable(true);
-		//ÊÖÊÆ
+		//æ‰‹åŠ¿
 		GestureDetector localGestureDetector = new GestureDetector(this);
 	    this.mGestureDetector = localGestureDetector;
 		//initMap();
 	   
-	    //¹¹Ôì·½·¨Ö´ĞĞÊ±´ÓÓÅÏÈÊı¾İÖĞ»Ö¸´ÓÎÏ·
-	    //¹Ø¿¨ÇĞ»»Ê±µ÷ÓÃinitMap()
+	    //æ„é€ æ–¹æ³•æ‰§è¡Œæ—¶ä»ä¼˜å…ˆæ•°æ®ä¸­æ¢å¤æ¸¸æˆ
+	    //å…³å¡åˆ‡æ¢æ—¶è°ƒç”¨initMap()
 	    resumeGame();
 	}	
 	private void getMapSizeAndPosition() {
@@ -301,8 +301,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		//¸¸ÀàÄ¬ÈÏµÄonKeyDown·½·¨£¬Èç¹û°´ÏÂ°´¼üÁË¸¸Àà¾Í»á·µ»Øtrue ËùÒÔ»Øµ÷·½·¨ÏµÍ³»á¹Ø±Õµ±Ç°activity 
-		if(!acceptKey)//½ûÓÃ°´¼ü£¿
+		//çˆ¶ç±»é»˜è®¤çš„onKeyDownæ–¹æ³•ï¼Œå¦‚æœæŒ‰ä¸‹æŒ‰é”®äº†çˆ¶ç±»å°±ä¼šè¿”å›true æ‰€ä»¥å›è°ƒæ–¹æ³•ç³»ç»Ÿä¼šå…³é—­å½“å‰activity 
+		if(!acceptKey)//ç¦ç”¨æŒ‰é”®ï¼Ÿ
 			return super.onKeyDown(keyCode, event);
 		/*KEYCODE_DPAD_UP=19;
 		KEYCODE_DPAD_DOWN=20;
@@ -310,7 +310,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		KEYCODE_DPAD_RIGHT=22;*/
 		if(keyCode==19)
 		{
-			//ÏòÉÏ
+			//å‘ä¸Š
 			moveUp();
 			StepCount++;
 			gameMain.startStep();
@@ -318,7 +318,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		if(keyCode==20)
 		{
-			//ÏòÏÂ
+			//å‘ä¸‹
 			moveDown();
 			StepCount++;
 			gameMain.startStep();
@@ -326,7 +326,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		if(keyCode==21)
 		{
-			//Ïò×ó
+			//å‘å·¦
 			moveLeft();
 			StepCount++;
 			gameMain.startStep();
@@ -334,7 +334,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		if(keyCode==22)
 		{
-			//ÏòÓÒ
+			//å‘å³
 			moveRight();
 			StepCount++;
 			gameMain.startStep();
@@ -344,26 +344,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		///////////////////
 		if(isFinished())
 		{
-			//½ûÓÃ°´¼ü
+			//ç¦ç”¨æŒ‰é”®
 			acceptKey=false;
-			//¼ÆÊ±Æ÷Í£Ö¹¼ÆÊ±
+			//è®¡æ—¶å™¨åœæ­¢è®¡æ—¶
 			TimerCount=gameMain.getTimerCount();
 			gameMain.stopTimer();	
-			//ÌáÊ¾½øÈëÏÂÒ»¹Ø
+			//æç¤ºè¿›å…¥ä¸‹ä¸€å…³
 			Builder builder=new AlertDialog.Builder(gameMain);
-			builder.setTitle("¹§Ï²¹ı¹Ø!");
-			builder.setMessage("¼ÌĞøÏÂÒ»¹ØÂğ?");
-			builder.setPositiveButton("¼ÌĞø", new DialogInterface.OnClickListener() {
+			builder.setTitle("æ­å–œè¿‡å…³!");
+			builder.setMessage("ç»§ç»­ä¸‹ä¸€å…³å—?");
+			builder.setPositiveButton("ç»§ç»­", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
-					//½øÈëÏÂÒ»¹Ø
+					//è¿›å…¥ä¸‹ä¸€å…³
 					acceptKey=true;
 					nextGrade();
 				}
 			});
-			builder.setNegativeButton("ÍË³ö", new DialogInterface.OnClickListener() {
+			builder.setNegativeButton("é€€å‡º", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -378,12 +378,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	}
 
 	public byte grassOrEnd(byte man)
-	//ÈËÀë¿ªºóĞŞ¸ÄÈËµÄ×ø±ê£¬Ä¬ÈÏ·µ»ØÊÇGRASS£¬Èç¹ûÈËÀë¿ªÇ°¸ÃÎ»ÖÃÊ±MANEND£¬Ôò·µ»ØEND
-	//Èç¹ûÈËÀë¿ªÇ°×´Ì¬Ê±Target£¬Ôò·µ»Øtarget
+	//äººç¦»å¼€åä¿®æ”¹äººçš„åæ ‡ï¼Œé»˜è®¤è¿”å›æ˜¯GRASSï¼Œå¦‚æœäººç¦»å¼€å‰è¯¥ä½ç½®æ—¶MANENDï¼Œåˆ™è¿”å›END
+	//å¦‚æœäººç¦»å¼€å‰çŠ¶æ€æ—¶Targetï¼Œåˆ™è¿”å›target
 	{
 		byte result=GRASS;
 		if(man==MANDOWNONEND || man==MANLEFTONEND || man==MANRIGHTONEND || man==MANUPONEND){
-			result=END;//END·ÅÏä×ÓµÄÖÕµã
+			result=END;//ENDæ”¾ç®±å­çš„ç»ˆç‚¹
 			}else if(man==TARGETDOWN||man==TARGETLEFT||man==TARGETRIGHT||man==TARGETUP||man==TARGETEND){
 			 result=TARGET;
 			}
@@ -393,48 +393,48 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	private void moveUp()
 	{
-		//ÉÏÒ»Î»ÎªBOX,BOXONEND,WALL
-		//rowºÍcolumnÊÇÈËµÄĞĞÁĞºÅ
+		//ä¸Šä¸€ä½ä¸ºBOX,BOXONEND,WALL
+		//rowå’Œcolumnæ˜¯äººçš„è¡Œåˆ—å·
 		Log.i(TAG,"moveup");
-		if(map[row-1][column]<4)//1£¬2£¬3·Ö±ğÎªÇ½£¬ºì»ÆÏä×Ó£¨²»¿É×ßµÄ£©
+		if(map[row-1][column]<4)//1ï¼Œ2ï¼Œ3åˆ†åˆ«ä¸ºå¢™ï¼Œçº¢é»„ç®±å­ï¼ˆä¸å¯èµ°çš„ï¼‰
 		{
-			//ÉÏÒ»Î»Îª BOX,BOXONEND
+			//ä¸Šä¸€ä½ä¸º BOX,BOXONEND
 			if(map[row-1][column]==BOX || map[row-1][column]==BOXONEND)
 			{
-				//ÉÏÉÏÒ»Î»Îª END,GRASSÔòÏòÉÏÒ»²½,ÆäËû²»ÓÃ´¦Àí
+				//ä¸Šä¸Šä¸€ä½ä¸º END,GRASSåˆ™å‘ä¸Šä¸€æ­¥,å…¶ä»–ä¸ç”¨å¤„ç†
 				if(map[row-2][column]==END || map[row-2][column]==GRASS)
 				{
 					Map currMap=new Map(row, column, map);
 					list.add(currMap);
 					byte boxTemp=map[row-2][column]==END?BOXONEND:BOX;
 					byte manTemp=map[row-1][column]==BOX?MANUP:MANUPONEND;
-					//Ïä×Ó±ä³Étemp,Ïä×ÓÍùÇ°Ò»²½
+					//ç®±å­å˜æˆtemp,ç®±å­å¾€å‰ä¸€æ­¥
 					map[row-2][column]=boxTemp;
-					//ÈË±ä³ÉMANUP,ÍùÉÏ×ßÒ»²½
+					//äººå˜æˆMANUP,å¾€ä¸Šèµ°ä¸€æ­¥
 					map[row-1][column]=manTemp;
-					//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³ÉGRASS»òÕßEND
+					//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆGRASSæˆ–è€…END
 					map[row][column]=grassOrEnd(map[row][column]);
-					//ÈËÀë¿ªºóĞŞ¸ÄÈËµÄ×ø±ê
+					//äººç¦»å¼€åä¿®æ”¹äººçš„åæ ‡
 					row--;
 				}
 			}
 		}
 		else
 		{
-			//ÉÏÒ»Î»Îª GRASS,END,ÆäËûÇé¿ö²»ÓÃ´¦Àí
+			//ä¸Šä¸€ä½ä¸º GRASS,END,å…¶ä»–æƒ…å†µä¸ç”¨å¤„ç†
 			if(map[row-1][column]==GRASS || map[row-1][column]==END)
 			{
 				Map currMap=new Map(row, column, map);
 				list.add(currMap);
 				byte temp=map[row-1][column]==END?MANUPONEND:MANUP;
-				//ÈË±ä³Étemp,ÈËÍùÉÏ×ßÒ»²½
+				//äººå˜æˆtemp,äººå¾€ä¸Šèµ°ä¸€æ­¥
 				map[row-1][column]=temp;
-				//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³ÉGRASS»òÕßEND
+				//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆGRASSæˆ–è€…END
 				map[row][column]=grassOrEnd(map[row][column]);
-				//ÈËÀë¿ªºóĞŞ¸ÄÈËµÄ×ø±ê
+				//äººç¦»å¼€åä¿®æ”¹äººçš„åæ ‡
 				row--;
 			}else{
-				//ÉÏÒ»Î»ÊÇ¾íÖá
+				//ä¸Šä¸€ä½æ˜¯å·è½´
 				if(map[row-1][column]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
@@ -445,12 +445,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					gameMain.startScroll();
 					row--;
 				}else{
-					//ÉÏÒ»Î»ÊÇtarget
+					//ä¸Šä¸€ä½æ˜¯target
 					if(map[row-1][column]==TARGET)
 					{
 						Map currMap=new Map(row,column,map);
 						list.add(currMap);
-						//ÅĞ¶ÏµØÍ¼ÖĞÊÇ·ñ»¹ÓĞ¾íÖá»òÕßÎ´Íê³ÉµÄÏä×Ó
+						//åˆ¤æ–­åœ°å›¾ä¸­æ˜¯å¦è¿˜æœ‰å·è½´æˆ–è€…æœªå®Œæˆçš„ç®±å­
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
@@ -469,24 +469,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	private void moveDown()
 	{
-		//ÏÂÒ»Î»ÎªBOX,BOXONEND,WALL
+		//ä¸‹ä¸€ä½ä¸ºBOX,BOXONEND,WALL
 		if(map[row+1][column]<4)
 		{
-			//ÏÂÒ»Î»Îª BOX,BOXONEND
+			//ä¸‹ä¸€ä½ä¸º BOX,BOXONEND
 			if(map[row+1][column]==BOX || map[row+1][column]==BOXONEND)
 			{
-				//ÏÂÏÂÒ»Î»Îª END,GRASSÔòÏòÏÂÒ»²½,ÆäËû²»ÓÃ´¦Àí
+				//ä¸‹ä¸‹ä¸€ä½ä¸º END,GRASSåˆ™å‘ä¸‹ä¸€æ­¥,å…¶ä»–ä¸ç”¨å¤„ç†
 				if(map[row+2][column]==END || map[row+2][column]==GRASS)
 				{
 					Map currMap=new Map(row, column, map);
 					list.add(currMap);
 					byte boxTemp=map[row+2][column]==END?BOXONEND:BOX;
 					byte manTemp=map[row+1][column]==BOX?MANDOWN:MANDOWNONEND;
-					//Ïä×Ó±ä³ÉboxTemp,Ïä×ÓÍùÏÂÒ»²½
+					//ç®±å­å˜æˆboxTemp,ç®±å­å¾€ä¸‹ä¸€æ­¥
 					map[row+2][column]=boxTemp;
-					//ÈË±ä³ÉmanTemp,ÍùÏÂ×ßÒ»²½
+					//äººå˜æˆmanTemp,å¾€ä¸‹èµ°ä¸€æ­¥
 					map[row+1][column]=manTemp;
-					//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+					//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					row++;
 					
@@ -495,19 +495,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		else
 		{
-			//ÏÂÒ»Î»Îª GRASS,END,ÆäËûÇé¿ö²»ÓÃ´¦Àí
+			//ä¸‹ä¸€ä½ä¸º GRASS,END,å…¶ä»–æƒ…å†µä¸ç”¨å¤„ç†
 			if(map[row+1][column]==GRASS || map[row+1][column]==END)
 			{
 				Map currMap=new Map(row, column, map);
 				list.add(currMap);
 				byte temp=map[row+1][column]==END?MANDOWNONEND:MANDOWN;
-				//ÈË±ä³Étemp,ÈËÍùÏÂ×ßÒ»²½
+				//äººå˜æˆtemp,äººå¾€ä¸‹èµ°ä¸€æ­¥
 				map[row+1][column]=temp;
-				//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+				//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				row++;
 			}else{
-				//ÏÂÒ»Î»ÊÇ¾íÖá
+				//ä¸‹ä¸€ä½æ˜¯å·è½´
 				if(map[row+1][column]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
@@ -518,12 +518,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					gameMain.startScroll();
 					row++;
 				}else{
-					//ÏÂÒ»Î»ÊÇtarget
+					//ä¸‹ä¸€ä½æ˜¯target
 					if(map[row+1][column]==TARGET)
 					{
 						Map currMap=new Map(row,column,map);
 						list.add(currMap);
-						//ÅĞ¶ÏµØÍ¼ÖĞÊÇ·ñ»¹ÓĞ×êÊ¯»òÕßÎ´Íê³ÉµÄÏä×Ó
+						//åˆ¤æ–­åœ°å›¾ä¸­æ˜¯å¦è¿˜æœ‰é’»çŸ³æˆ–è€…æœªå®Œæˆçš„ç®±å­
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
@@ -542,24 +542,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	private void moveLeft()
 	{
-		//×óÒ»Î»ÎªBOX,BOXONEND,WALL
+		//å·¦ä¸€ä½ä¸ºBOX,BOXONEND,WALL
 		if(map[row][column-1]<4)
 		{
-			//×óÒ»Î»Îª BOX,BOXONEND
+			//å·¦ä¸€ä½ä¸º BOX,BOXONEND
 			if(map[row][column-1]==BOX || map[row][column-1]==BOXONEND)
 			{
-				//×ó×óÒ»Î»Îª END,GRASSÔòÏò×óÒ»²½,ÆäËû²»ÓÃ´¦Àí
+				//å·¦å·¦ä¸€ä½ä¸º END,GRASSåˆ™å‘å·¦ä¸€æ­¥,å…¶ä»–ä¸ç”¨å¤„ç†
 				if(map[row][column-2]==END || map[row][column-2]==GRASS)
 				{
 					Map currMap=new Map(row, column, map);
 					list.add(currMap);
 					byte boxTemp=map[row][column-2]==END?BOXONEND:BOX;
 					byte manTemp=map[row][column-1]==BOX?MANLEFT:MANLEFTONEND;
-					//Ïä×Ó±ä³ÉboxTemp,Ïä×ÓÍù×óÒ»²½
+					//ç®±å­å˜æˆboxTemp,ç®±å­å¾€å·¦ä¸€æ­¥
 					map[row][column-2]=boxTemp;
-					//ÈË±ä³ÉmanTemp,Íù×ó×ßÒ»²½
+					//äººå˜æˆmanTemp,å¾€å·¦èµ°ä¸€æ­¥
 					map[row][column-1]=manTemp;
-					//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+					//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					column--;
 					
@@ -568,19 +568,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		else
 		{
-			//×óÒ»Î»Îª GRASS,END,ÆäËûÇé¿ö²»ÓÃ´¦Àí
+			//å·¦ä¸€ä½ä¸º GRASS,END,å…¶ä»–æƒ…å†µä¸ç”¨å¤„ç†
 			if(map[row][column-1]==GRASS || map[row][column-1]==END)
 			{
 				Map currMap=new Map(row, column, map);
 				list.add(currMap);
 				byte temp=map[row][column-1]==END?MANLEFTONEND:MANLEFT;
-				//ÈË±ä³Étemp,ÈËÍù×ó×ßÒ»²½
+				//äººå˜æˆtemp,äººå¾€å·¦èµ°ä¸€æ­¥
 				map[row][column-1]=temp;
-				//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+				//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column--;
 			}else{
-				//×óÒ»Î»ÊÇ¾íÖá
+				//å·¦ä¸€ä½æ˜¯å·è½´
 				if(map[row][column-1]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
@@ -591,7 +591,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					gameMain.startScroll();
 					column--;
 				}else{
-					//×óÒ»Î»ÊÇtarget
+					//å·¦ä¸€ä½æ˜¯target
 					if(map[row][column-1]==TARGET)
 					{
 						Map currMap=new Map(row,column,map);
@@ -614,24 +614,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	private void moveRight()
 	{
-		//ÓÒÒ»Î»ÎªBOX,BOXONEND,WALL
+		//å³ä¸€ä½ä¸ºBOX,BOXONEND,WALL
 		if(map[row][column+1]<4)
 		{
-			//ÓÒÒ»Î»Îª BOX,BOXONEND
+			//å³ä¸€ä½ä¸º BOX,BOXONEND
 			if(map[row][column+1]==BOX || map[row][column+1]==BOXONEND)
 			{
-				//ÓÒÓÒÒ»Î»Îª END,GRASSÔòÏòÓÒÒ»²½,ÆäËû²»ÓÃ´¦Àí
+				//å³å³ä¸€ä½ä¸º END,GRASSåˆ™å‘å³ä¸€æ­¥,å…¶ä»–ä¸ç”¨å¤„ç†
 				if(map[row][column+2]==END || map[row][column+2]==GRASS)
 				{
 					Map currMap=new Map(row, column, map);
 					list.add(currMap);
 					byte boxTemp=map[row][column+2]==END?BOXONEND:BOX;
 					byte manTemp=map[row][column+1]==BOX?MANRIGHT:MANRIGHTONEND;
-					//Ïä×Ó±ä³ÉboxTemp,Ïä×ÓÍùÓÒÒ»²½
+					//ç®±å­å˜æˆboxTemp,ç®±å­å¾€å³ä¸€æ­¥
 					map[row][column+2]=boxTemp;
-					//ÈË±ä³ÉmanTemp,ÍùÓÒ×ßÒ»²½
+					//äººå˜æˆmanTemp,å¾€å³èµ°ä¸€æ­¥
 					map[row][column+1]=manTemp;
-					//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+					//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					column++;
 					
@@ -640,19 +640,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 		else
 		{
-			//ÓÒÒ»Î»Îª GRASS,END,ÆäËûÇé¿ö²»ÓÃ´¦Àí
+			//å³ä¸€ä½ä¸º GRASS,END,å…¶ä»–æƒ…å†µä¸ç”¨å¤„ç†
 			if(map[row][column+1]==GRASS || map[row][column+1]==END)
 			{
 				Map currMap=new Map(row, column, map);
 				list.add(currMap);
 				byte temp=map[row][column+1]==END?MANRIGHTONEND:MANRIGHT;
-				//ÈË±ä³Étemp,ÈËÍùÓÒ×ßÒ»²½
+				//äººå˜æˆtemp,äººå¾€å³èµ°ä¸€æ­¥
 				map[row][column+1]=temp;
-				//ÈË¸Õ²ÅÕ¾µÄµØ·½±ä³É grassOrEnd(map[row][column])
+				//äººåˆšæ‰ç«™çš„åœ°æ–¹å˜æˆ grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column++;
 			}else{
-				//ÓÒÒ»Î»ÊÇ¾íÖá
+				//å³ä¸€ä½æ˜¯å·è½´
 				if(map[row][column+1]==SCROLL)
 				{
 					Map currMap=new Map(row,column,map);
@@ -663,12 +663,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					gameMain.startScroll();
 					column++;
 				}else{
-					//ÓÒÒ»Î»ÊÇtarget
+					//å³ä¸€ä½æ˜¯target
 					if(map[row][column+1]==TARGET)
 					{
 						Map currMap=new Map(row,column,map);
 						list.add(currMap);
-						//ÅĞ¶ÏµØÍ¼ÖĞÊÇ·ñ»¹ÓĞ¾íÖá»òÕßÎ´Íê³ÉµÄÏä×Ó
+						//åˆ¤æ–­åœ°å›¾ä¸­æ˜¯å¦è¿˜æœ‰å·è½´æˆ–è€…æœªå®Œæˆçš„ç®±å­
 						byte temp=TARGETEND;
 						for(int i=0;i<mapRow;i++){
 							for(int j=0;j<mapColumn;j++){
@@ -686,12 +686,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	}
 	
 	public boolean isFinished()
-	{  Log.i(TAG,"isfinished");
+	{   Log.i(TAG,"isfinished");
 		for(int i=0;i<mapRow;i++){
 			for(int j=0;j<mapColumn;j++){
 				//if(map[i][j]==END || map[i][j]==MANDOWNONEND || map[i][j]==MANUPONEND || map[i][j]==MANLEFTONEND || map[i][j]==MANRIGHTONEND||map[i][j]==TAGET)
 				if(map[i][j]==TARGET||map[i][j]==SCROLL||map[i][j]==END){
-					return false;//ÓÎÏ·²»½áÊø
+					return false;//æ¸¸æˆä¸ç»“æŸ
 				}
 			}
 		}
@@ -707,10 +707,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		for(int i=0;i<mapRow;i++)
 			for(int j=0;j<mapColumn;j++)
 			{
-				//»­³öµØÍ¼ i´ú±íĞĞÊı,j´ú±íÁĞÊı
+				//ç”»å‡ºåœ°å›¾ iä»£è¡¨è¡Œæ•°,jä»£è¡¨åˆ—æ•°
 				if(map[i][j]!=0)
 				canvas.drawBitmap(pic[map[i][j]], leftX+j*30,leftY+i*30, paint);
-			//1.Î»Í¼ÊµÀı2£¬3Î»Í¼µÄX,Y×ø±ê£¬4»­±ÊÊµÀı
+			//1.ä½å›¾å®ä¾‹2ï¼Œ3ä½å›¾çš„X,Yåæ ‡ï¼Œ4ç”»ç¬”å®ä¾‹
 			}
 	}
 	
@@ -718,7 +718,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		Canvas c=null;
 		try
-		{//µÃµ½canvas»­²¼¶ÔÏó
+		{//å¾—åˆ°canvasç”»å¸ƒå¯¹è±¡
 			c=holder.lockCanvas();
 			paint(c);
 		}
@@ -730,14 +730,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	}
 
 	@Override
-	//ÔÚ°´ÏÂ¶¯×÷Ê±±»µ÷ÓÃ 
+	//åœ¨æŒ‰ä¸‹åŠ¨ä½œæ—¶è¢«è°ƒç”¨ 
 	public boolean onDown(MotionEvent e) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	//»¬¶¯ÊÖÊÆÊÂ¼ş
+	//æ»‘åŠ¨æ‰‹åŠ¿äº‹ä»¶
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		// TODO Auto-generated method stub
@@ -760,7 +760,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				this.onKeyDown(19,null);
 		return false;
 	}
-	//ÔÚ³¤°´Ê±±»µ÷ÓÃ 
+	//åœ¨é•¿æŒ‰æ—¶è¢«è°ƒç”¨ 
 	@Override
 	public void onLongPress(MotionEvent e) {
 		// TODO Auto-generated method stub
@@ -773,7 +773,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		// TODO Auto-generated method stub
 		return false;
 	}
-	//ÔÚ°´×¡Ê±±»µ÷ÓÃ 
+	//åœ¨æŒ‰ä½æ—¶è¢«è°ƒç”¨ 
 	@Override
 	public void onShowPress(MotionEvent e) {
 		// TODO Auto-generated method stub
@@ -813,7 +813,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	{
 		return StepCount;
 	}
-	//±éÀú»ñµÃËùÓĞ¾íÖáµÄÊıÁ¿
+	//éå†è·å¾—æ‰€æœ‰å·è½´çš„æ•°é‡
 	public int getScrollCountAll(){
 		for(int i=0;i<map.length;i++){
 			for(int j=0;j<map[0].length;j++){
