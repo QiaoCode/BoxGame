@@ -3,6 +3,7 @@ package com.box;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,6 +37,7 @@ public class GameMain extends Activity {
 	private Button bt_menu;
 	private Button bt_run;
 	private static String TAGC="Camera";
+	private Scanner scanner=null;
 	//加入时间**************************
     private static String TAG="Timer";
     
@@ -137,7 +139,10 @@ public class GameMain extends Activity {
     	super.onActivityResult(requestCode, resultCode, data);
     //将获得的图像存在Bitmap的bp中
 	 Bitmap bp=(Bitmap)data.getExtras().get("data");
+	 scanner.scan(bp);
+
  }
+
   //获得卷轴计数**************************
     public int getScrollCount(){
     	ScrollCount=view.ScrollCountAll-view.curScrollCount();

@@ -3,6 +3,7 @@ package TopCodes;
 
 import java.util.List;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 /**
  * Loads and scans images for TopCodes.  The algorithm does a single
@@ -15,7 +16,9 @@ import android.graphics.Bitmap;
 public class Scanner {
 
 
-   /** Total width of image */
+   private static final String TAG = "begin";
+
+/** Total width of image */
    protected int w;
 
    /** Total height of image */
@@ -52,6 +55,7 @@ public class Scanner {
  * Scan the given image and return a list of all topcodes found in it.
  */
    public List<TopCode> scan(Bitmap image) {
+	  Log.i(TAG, "scan start!");
       this.w       = image.getWidth();
       this.h       = image.getHeight();
       if (data == null || data.length < w * h) {

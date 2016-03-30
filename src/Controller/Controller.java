@@ -9,13 +9,20 @@ import java.util.List;
 
 import TopCodes.TopCode;
 
+import android.graphics.Bitmap;
+
 import com.box.GameMain;
 
 public class Controller {
 //这个类用来读取图片上的指令，对人物进行控制
 	private byte[][] map=null;
-	//topcodes码
-//	private ArrayList TopCodeList=new ArrayList();
+	//定义指令对象
+	int a=1;
+	int b=2;
+	int c=3;
+	int d=4;
+	int e=5;
+	int f=6;
 	//指令链表
 	private ArrayList InstructionList=new ArrayList();
 	//指令块信息链表
@@ -24,11 +31,17 @@ public class Controller {
 	private int CurrentInstruction=0;
 	private Object BEGIN=0;
 	private Object END=1;
+
+	//topcodes码
 	List<TopCode> TopCodeList =new ArrayList<TopCode>();
+
 	
+    //获得图片
+    public void getBitmap(){
+   // 	TopCodeList.scan(bp);
+    }
 	//用来退出执行状态
     public void Exit(){
-
     	//所有的topcode和指令list都要清空
     	if(TopCodeList!=null){
     		/*if(TopCodeList.get(0)!=BEGIN||TopCodeList.get(TopCodeList.size()-1)!=END) {
