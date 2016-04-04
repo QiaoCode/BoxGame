@@ -10,32 +10,59 @@ import java.util.List;
 import TopCodes.TopCode;
 
 import android.graphics.Bitmap;
+import android.view.KeyEvent;
 
 import com.box.GameMain;
+import com.box.GameView;
 
 public class Controller {
 //这个类用来读取图片上的指令，对人物进行控制
 	private byte[][] map=null;
-	//定义指令对象
-	int a=1;
-	int b=2;
-	int c=3;
-	int d=4;
-	int e=5;
-	int f=6;
 	//指令链表
 	private ArrayList InstructionList=new ArrayList();
 	//指令块信息链表
 	private ArrayList BlockInfoList=new ArrayList();
-	//定义当前的编译指令
-	private int CurrentInstruction=0;
 	private Object BEGIN=0;
 	private Object END=1;
-
+	private GameView view=null;
 	//topcodes码
 	List<TopCode> TopCodeList =new ArrayList<TopCode>();
-
+//全部指令获得后，用runall()函数判断执行
+//未加记歩，如何直接调用keycode方法？
+	public void runall(){
+	  for(int i=0;i<InstructionList.size();++i){
+		switch (Instruction.toString(InstructionList.get(i)))
+		{
+		case UP:
+			view.moveUp();
+			break;
+		case DOWN:
+			view.moveDown();
+			break;
+		case LEFT:
+			view.moveLeft();
+			break;
+		case RIGHT:
+			view.moveRight();
+			break;
+		  }
+	  }
+	}
+//使用switch枚举类型
+	public enum Instruction
+	{
+	UP, DOWN, LEFT, RIGHT,NOVALUE;
 	
+	public static Instruction toString(Object object)
+	{
+	try {
+	return valueOf((String) object);
+	    }
+	catch (Exception ex) {
+	return NOVALUE;
+	    }
+	}
+	}
     //获得图片
     public void getBitmap(){
    // 	TopCodeList.scan(bp);
@@ -58,7 +85,6 @@ public class Controller {
     public void PreExe(){
     	try
     	{   int tempWhileStart;//临时开始的位置
-    		CurrentInstruction=0;
     		int CurrentBlock=0;//当前的编程块
     	/*	if(Read()==-1)	//读取图片信息指令并转换为程序代码
     		{	
@@ -108,5 +134,5 @@ private void Capture() {
 	
 }
      
-     
+
 }

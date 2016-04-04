@@ -124,6 +124,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 			Toast.makeText(this.getContext(), "此关已完成，不能撤销！", Toast.LENGTH_SHORT).show();
 		}
 	}
+	public void thisGrade()
+	{
+		gameMain.stopTimer();	
+		acceptKey=true;
+		initMap();
+		repaint();
+	}
 	
 	public void nextGrade()
 	{
@@ -391,7 +398,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		return result;
 	}
 	
-	private void moveUp()
+	public void moveUp()
 	{
 		//上一位为BOX,BOXONEND,WALL
 		//row和column是人的行列号
@@ -467,7 +474,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	  }
 	}
 	
-	private void moveDown()
+	public void moveDown()
 	{
 		//下一位为BOX,BOXONEND,WALL
 		if(map[row+1][column]<4)
@@ -540,7 +547,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 	}
 	
-	private void moveLeft()
+	public void moveLeft()
 	{
 		//左一位为BOX,BOXONEND,WALL
 		if(map[row][column-1]<4)
@@ -612,7 +619,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		}
 	}
 	
-	private void moveRight()
+	public void moveRight()
 	{
 		//右一位为BOX,BOXONEND,WALL
 		if(map[row][column+1]<4)

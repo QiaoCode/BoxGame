@@ -35,9 +35,11 @@ public class GameMain extends Activity {
 	//GameView界面，该界面功能为对本案例中的场景进行渲染
 	private GameView view=null;
 	private Button bt_menu;
+	private Button bt_init;
 	private Button bt_run;
 	private static String TAGC="Camera";
-	private Scanner scanner=null;
+	private List<TopCode> TopCodesList=new ArrayList();
+	//private Scanner scanner=null;
 	//加入时间**************************
     private static String TAG="Timer";
     
@@ -109,6 +111,15 @@ public class GameMain extends Activity {
 	    		}
 	    	}
 	    }; 
+	    //获得重新开始的按钮
+	    bt_init=(Button)findViewById(R.id.bt_menu_init);
+	    bt_init.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+			//	view.undo();
+				view.thisGrade();
+			}
+        });
 	    //获得菜单按钮
         bt_menu=(Button)findViewById(R.id.bt_menu);
         bt_menu.setOnClickListener(new OnClickListener(){
@@ -139,10 +150,12 @@ public class GameMain extends Activity {
     	super.onActivityResult(requestCode, resultCode, data);
     //将获得的图像存在Bitmap的bp中
 	 Bitmap bp=(Bitmap)data.getExtras().get("data");
-	 scanner.scan(bp);
-
+   	 Scanner scanner=new Scanner();
+   	 TopCodesList=scanner.scan(bp);//返回spots列表
+   	 Log.i(TAGC, "spots-->"+TopCodesList);
  }
-
+    
+    
   //获得卷轴计数**************************
     public int getScrollCount(){
     	ScrollCount=view.ScrollCountAll-view.curScrollCount();

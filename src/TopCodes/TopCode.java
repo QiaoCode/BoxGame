@@ -24,6 +24,8 @@
  */
 package TopCodes;
 
+
+
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -142,6 +144,14 @@ public class TopCode {
       return this.unit * WIDTH;
    }
    
+   
+
+@Override
+public String toString() {
+	// TODO Auto-generated method stub
+	return String.valueOf(this.code);
+}
+
 
 /**
  * Sets the diameter of this code in pixels.
@@ -375,6 +385,7 @@ public class TopCode {
  * of pixels between the outer edges of the first black ring. 
  * North, south, east, and west readings are taken and the average
  * is returned.
+ * 决定了象征的单位长度之间通过计算像素的数量第一位黑人环的外缘。北、南、东、西读数和平均返回。
  */
    protected float readUnit(Scanner scanner) { 
       int sx = (int)Math.round(x);
@@ -399,7 +410,7 @@ public class TopCode {
          // Left sample
          sample = scanner.getBW3x3(sx - i, sy);
          if (distL <= 0) { 
-            if (whiteL && sample == 0) {
+            if (whiteL && sample == 0) { 
                whiteL = false;
             } else if (!whiteL && sample == 1) {
                distL = i;

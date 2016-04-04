@@ -2,6 +2,7 @@
 package TopCodes;
 
 import java.util.List;
+
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -11,12 +12,14 @@ import android.util.Log;
  * for a TopCode bullseye patterns.  If the pattern matches and the
  * black and white regions meet certain ratio constraints, then the
  * pixel is tested as the center of a candidate TopCode.
+ *载入扫描Topcodes图片，该算法是做一个图像的扫描（在一定时间水平的扫描）寻找topcodes的圆心
+ *如果这个模式匹配，而且黑色和白色区域满足一定比例限制，然后测试以像素为中心作为一个topcode候选。
  * @author Michael Horn
  */ 
 public class Scanner {
 
 
-   private static final String TAG = "begin";
+   private static final String TAG = "start";
 
 /** Total width of image */
    protected int w;
@@ -53,16 +56,17 @@ public class Scanner {
 
 /**
  * Scan the given image and return a list of all topcodes found in it.
+ 扫描给定的图片并返回里面所有topcodes列表
  */
    public List<TopCode> scan(Bitmap image) {
-	  Log.i(TAG, "scan start!");
+	  Log.i(TAG, "scan start");
       this.w       = image.getWidth();
       this.h       = image.getHeight();
       if (data == null || data.length < w * h) {
          this.data  = new int[w * h];
       }
       image.getPixels(this.data, 0, w, 0, 0, w, h);
-      
+       
       threshold();          // run the adaptive threshold filter
       return findCodes();   // scan for topcodes
    }
@@ -151,6 +155,7 @@ public class Scanner {
 /**
  * Average of thresholded pixels in a 3x3 region around (x,y).
  * Returned value is either 0 (black) or 1 (white).
+ * 3 x3的阈值的像素平均周边地区(x,y)。返回值是0(黑色)或1(白色)。
  */
    protected int getBW3x3(int x, int y) { 
       if (x < 1 || x > w-2 || y < 1 || y >= h-2) return 0;
@@ -312,11 +317,12 @@ public class Scanner {
  * Scan the image line by line looking for TopCodes   
  */
    protected List<TopCode> findCodes() {
+	  Log.i(TAG, "findCodes start");
       this.tcount = 0;
       List<TopCode> spots = new java.util.ArrayList<TopCode>();
 
       TopCode spot = new TopCode();
-      int k = w * 2;
+      int k = w * 2;//第K个像素点
       for (int j=2; j<h-2; j++) {
          for (int i=0; i<w; i++) {
             if ((data[k] & 0x2000000) > 0) {
@@ -327,13 +333,14 @@ public class Scanner {
 /*
                if ((data[k-w] & 0x2000000) > 0 ||
                    (data[k+w] & 0x2000000) > 0)) {
-*/                    
+*/                  //判重  
                   if (!overlaps(spots, i, j)) {
-                     this.tcount++;
-                     spot.decode(this, i, j);
+                     this.tcount++;//通过测试的候选圆心的数量
+                     spot.decode(this, i, j);//解码获得一系列信息
                      if (spot.isValid()) {
                         spots.add(spot);
                         spot = new TopCode();
+                        
                      }
                   }
                }
@@ -341,8 +348,9 @@ public class Scanner {
             k++;
          }
       }
-
+      Log.i(TAG, "findCodes-->"+spots);
       return spots;
+      
    }
 
 /**
