@@ -77,7 +77,7 @@ public class GameMain extends Activity {
     private static final int UPDATE_SCROLLTEXT=0;
     private static final int UPDATE_STEPTEXT=0;
     //对应
-    public Map<Integer,Integer> topCodeMap=new HashMap<Integer,Integer>();
+    public Map<Integer,int[]> topCodeMap=new HashMap<Integer,int[]>();//{109-->[19,1],110-->[19,2]}
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,10 +86,11 @@ public class GameMain extends Activity {
         //获得mainactivity中的视图
         view=(GameView)findViewById(R.id.gameView);
         //对应Map
-        topCodeMap.put(47, 19);
-        topCodeMap.put(55, 20);
-        topCodeMap.put(103, 21);
-        topCodeMap.put(107, 22);
+        topCodeMap.put(47, new int[] {19,1});
+        topCodeMap.put(55, new int[] {20,1});
+        topCodeMap.put(103, new int[] {21,1});
+        topCodeMap.put(107, new int[] {22,1});
+
         //获得计时器数字，设置Handler
         ClockText=(TextView)findViewById(R.id.clocktext);
         ScrollText=(TextView)findViewById(R.id.scrolltext);
@@ -196,19 +197,56 @@ public class GameMain extends Activity {
 		rcount = 0;
 	}
 	//************************************
-    public int getKeyCode(int code){
+    public int[] getKeyCode(int code){
     	return topCodeMap.get(code);
     }
-    
+    public void convertKeyCodeToAction(int KeyCode){
+    	switch(KeyCode){
+    	case 19:
+    		view.moveUp();
+    		view.StepCount++;
+    		startStep();
+    		view.repaint();
+    		break;
+    	case 20:
+    		view.moveDown();
+    		view.StepCount++;
+    		startStep();
+    		view.repaint();
+    		break;
+    	case 21:
+    		view.moveLeft();
+    		view.StepCount++;
+    		startStep();
+    		view.repaint();
+    		break;
+    	case 22:
+    		view.moveRight();
+    		view.StepCount++;
+    		startStep();
+    		view.repaint();
+    		break;
+    	}
+    }
+    /**
+     * @return
+     */
+    /**
+     * @return
+     */
     private TopCode getInstructions(){
-    	if(rcount<TopCodesList.size()){
+    	if(TopCodesList==null){
+    		Log.i(TAG,"TopCodesList==null");
+    	}else if(rcount<TopCodesList.size()){
     		Instruction=TopCodesList.get(rcount);//rcount是在updateTEXT的时候更新的
-    		int KeyCode=getKeyCode(Instruction.getCode());
+    		int[] KeyCode=getKeyCode(Instruction.getCode());//长度为2
     		System.out.println("进入");
-    		System.out.println(KeyCode);
-    		
+    		System.out.println(KeyCode[1]);
+    		for(int i=0;i<KeyCode[1];i++){
+    			convertKeyCodeToAction(KeyCode[0]);
+    		}
     		Log.e(TAG,"getInstructions"+String.valueOf(Instruction));
-    		Log.e(TAG,"getKeyCode"+String.valueOf(KeyCode));
+    	//log.e(TAG,"getKeyCode"+String.valueOf(KeyCode));
     	}else{ 
     		Instruction=TopCodesList.get(TopCodesList.size()-1);
     		stopList();
@@ -236,13 +274,12 @@ public class GameMain extends Activity {
                    //Log.i(TAG, "count: "+String.valueOf(count));  
             	   Log.e(TAG,"startsendrun()");
                    sendRunMessage(UPDATE_RUNTEXT);
-               }  
+               }   
            };  
        }  
  
        if(rTimer != null && rTimerTask != null )  
            rTimer.schedule(rTimerTask, rdelay, rperiod); 
-   
    } 
     
     //设置一个intent，调用相机
@@ -255,21 +292,34 @@ public class GameMain extends Activity {
     //在新的activity中获得图片数据
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
     	super.onActivityResult(requestCode, resultCode, data);
-    //将获得的图像存在Bitmap的bp中
-	 Bitmap bp=(Bitmap)data.getExtras().get("data");
-   	 Scanner scanner=new Scanner();
-   	 TopCodesList=scanner.scan(bp);//返回spots列表
+        if (resultCode == RESULT_OK) { 
+        	//将获得的图像存在Bitmap的bp中
+       	 Bitmap bp=(Bitmap)data.getExtras().get("data");
+       	 Scanner scanner=new Scanner();
+       	 TopCodesList=scanner.scan(bp);//返回spots列表
+        } else if(resultCode == RESULT_CANCELED) { 
+    	   // 用户取消了图像捕获
+        	Toast.makeText(this.getApplicationContext(), "取消照相", Toast.LENGTH_SHORT).show();
+      		 stopInstructions();
+       		 stopList();
+        }
    	 if(TopCodesList==null||TopCodesList.size()<=2){
-   		 Toast.makeText(this.getApplicationContext(), "头尾编码块为空", Toast.LENGTH_SHORT).show();
+   		 stopInstructions();
+   		 stopList();
+   		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，不正确", Toast.LENGTH_SHORT).show();
    	 }
    	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
    		TopCodesList.remove(0);
    		TopCodesList.remove(TopCodesList.size()-1);
    	 }else{
+   		 stopInstructions();
+   		 stopList();
    		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
    	 }
    	 
    	 Log.i(TAGC, "spots-->"+TopCodesList);
+     //开启timer
+     startList();
  }
     
     

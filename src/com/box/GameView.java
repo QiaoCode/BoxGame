@@ -318,32 +318,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		if(keyCode==19)
 		{
 			//向上
-			moveUp();
+			if(moveUp()){
 			StepCount++;
+			}
 			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==20)
 		{
 			//向下
-			moveDown();
-			StepCount++;
+			if(moveDown()){
+			StepCount++;}
 			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==21)
 		{
 			//向左
-			moveLeft();
-			StepCount++;
+			if(moveLeft()){
+			StepCount++;}
 			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
 		if(keyCode==22)
 		{
 			//向右
-			moveRight();
-			StepCount++;
+			if(moveRight()){
+			StepCount++;}
 			gameMain.startStep();
 			Log.i(TAG,"StepCount"+StepCount);
 		}
@@ -398,10 +399,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		return result;
 	}
 	
-	public void moveUp()
+	public boolean moveUp()
 	{
 		//上一位为BOX,BOXONEND,WALL
 		//row和column是人的行列号
+		boolean canMove=false;
 		Log.i(TAG,"moveup");
 		if(map[row-1][column]<4)//1，2，3分别为墙，红黄箱子（不可走的）
 		{
@@ -423,6 +425,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					//人离开后修改人的坐标
 					row--;
+					canMove=true;
 				}
 			}
 		}
@@ -440,6 +443,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				map[row][column]=grassOrEnd(map[row][column]);
 				//人离开后修改人的坐标
 				row--;
+				canMove=true;
 			}else{
 				//上一位是卷轴
 				if(map[row-1][column]==SCROLL)
@@ -451,6 +455,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					gameMain.startScroll();
 					row--;
+					canMove=true;
 				}else{
 					//上一位是target
 					if(map[row-1][column]==TARGET)
@@ -468,14 +473,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row-1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row--;
+						canMove=true;
 						}
 			}
 		}
 	  }
+		return canMove;
 	}
 	
-	public void moveDown()
+	public boolean moveDown()
 	{
+		boolean canMove=false;
 		//下一位为BOX,BOXONEND,WALL
 		if(map[row+1][column]<4)
 		{
@@ -496,7 +504,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					//人刚才站的地方变成 grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					row++;
-					
+					canMove=true;
 				}
 			}
 		}
@@ -513,6 +521,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				row++;
+				canMove=true;
 			}else{
 				//下一位是卷轴
 				if(map[row+1][column]==SCROLL)
@@ -524,6 +533,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					gameMain.startScroll();
 					row++;
+					canMove=true;
 				}else{
 					//下一位是target
 					if(map[row+1][column]==TARGET)
@@ -541,14 +551,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row+1][column]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						row++;
+						canMove=true;
 						}
 			}
 			}		
 		}
+		return canMove;
 	}
 	
-	public void moveLeft()
+	public boolean moveLeft()
 	{
+		boolean canMove=false;
 		//左一位为BOX,BOXONEND,WALL
 		if(map[row][column-1]<4)
 		{
@@ -569,7 +582,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					//人刚才站的地方变成 grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					column--;
-					
+					canMove=true;
 				}
 			}
 		}
@@ -586,6 +599,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column--;
+				canMove=true;
 			}else{
 				//左一位是卷轴
 				if(map[row][column-1]==SCROLL)
@@ -597,6 +611,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					gameMain.startScroll();
 					column--;
+					canMove=true;
 				}else{
 					//左一位是target
 					if(map[row][column-1]==TARGET)
@@ -613,14 +628,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column-1]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						column--;
+						canMove=true;
 						}
 			}
 			}		
 		}
+		return canMove;
 	}
 	
-	public void moveRight()
+	public boolean moveRight()
 	{
+		boolean canMove=false;
 		//右一位为BOX,BOXONEND,WALL
 		if(map[row][column+1]<4)
 		{
@@ -641,7 +659,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					//人刚才站的地方变成 grassOrEnd(map[row][column])
 					map[row][column]=grassOrEnd(map[row][column]);
 					column++;
-					
+					canMove=true;
 				}
 			}
 		}
@@ -658,6 +676,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 				//人刚才站的地方变成 grassOrEnd(map[row][column])
 				map[row][column]=grassOrEnd(map[row][column]);
 				column++;
+				canMove=true;
 			}else{
 				//右一位是卷轴
 				if(map[row][column+1]==SCROLL)
@@ -669,6 +688,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 					map[row][column]=grassOrEnd(map[row][column]);
 					gameMain.startScroll();
 					column++;
+					canMove=true;
 				}else{
 					//右一位是target
 					if(map[row][column+1]==TARGET)
@@ -686,10 +706,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 						map[row][column+1]=temp;
 						map[row][column]=grassOrEnd(map[row][column]);
 						column++;
+						canMove=true;
 						}
 			    }
 			}		
 		}
+		return canMove;
 	}
 	
 	public boolean isFinished()
