@@ -42,7 +42,10 @@ public class GameMain extends Activity {
 	private Button bt_run;
 	private static String TAGC="Camera";
 	//指令
-	private List<TopCode> TopCodesList=new ArrayList();	private TopCode Instruction=null;
+	private List<TopCode> TopCodesList=new ArrayList();	
+	private TopCode Instruction=null;
+	private List<TopCode> tempList=new ArrayList();	
+    
     private Timer rTimer=null;
     private static int rcount=0;
     private TimerTask rTimerTask=null;
@@ -78,7 +81,9 @@ public class GameMain extends Activity {
     private static final int UPDATE_STEPTEXT=0;
     //对应
     public Map<Integer,int[]> topCodeMap=new HashMap<Integer,int[]>();//{109-->[19,1],110-->[19,2]}
-    
+    public Map<Integer,Integer> loopMap=new HashMap<Integer,Integer>();//loop
+    //loop
+    private int end=179;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +95,23 @@ public class GameMain extends Activity {
         topCodeMap.put(55, new int[] {20,1});
         topCodeMap.put(103, new int[] {21,1});
         topCodeMap.put(107, new int[] {22,1});
-
+        topCodeMap.put(59, new int[] {19,2});
+        topCodeMap.put(61, new int[] {20,2});
+        topCodeMap.put(79, new int[] {21,2});
+        topCodeMap.put(87, new int[] {22,2});
+        topCodeMap.put(91, new int[] {19,3});
+        topCodeMap.put(93, new int[] {20,3});
+        topCodeMap.put(115, new int[] {21,3});
+        topCodeMap.put(117, new int[] {22,3});
+        topCodeMap.put(121, new int[] {19,4});
+        topCodeMap.put(143, new int[] {20,4});
+        topCodeMap.put(151, new int[] {21,4});
+        topCodeMap.put(155, new int[] {22,4});
+        loopMap.put(157, 1);
+        loopMap.put(167, 2);
+        loopMap.put(171, 3);
+        loopMap.put(173, 4);
+       // topCodeMap.put(155, new int[] {22,4});
         //获得计时器数字，设置Handler
         ClockText=(TextView)findViewById(R.id.clocktext);
         ScrollText=(TextView)findViewById(R.id.scrolltext);
@@ -235,10 +256,10 @@ public class GameMain extends Activity {
      * @return
      */
     private TopCode getInstructions(){
-    	if(TopCodesList==null){
-    		Log.i(TAG,"TopCodesList==null");
-    	}else if(rcount<TopCodesList.size()){
-    		Instruction=TopCodesList.get(rcount);//rcount是在updateTEXT的时候更新的
+    	if(tempList==null){
+    		Log.i(TAG,"tempList==null");
+    	}else if(rcount<tempList.size()){
+    		Instruction=tempList.get(rcount);//rcount是在updateTEXT的时候更新的
     		int[] KeyCode=getKeyCode(Instruction.getCode());//长度为2
     		System.out.println("进入");
     		System.out.println(KeyCode[1]);
@@ -248,7 +269,7 @@ public class GameMain extends Activity {
     		Log.e(TAG,"getInstructions"+String.valueOf(Instruction));
     	//log.e(TAG,"getKeyCode"+String.valueOf(KeyCode));
     	}else{ 
-    		Instruction=TopCodesList.get(TopCodesList.size()-1);
+    		Instruction=tempList.get(tempList.size()-1);
     		stopList();
     	}
     	return Instruction;
@@ -289,6 +310,50 @@ public class GameMain extends Activity {
 			Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent,0);
     }
+    
+	public List<TopCode> produceLoopArray(List<TopCode> codes){
+		if (codes == null || codes.size() <= 2){
+			return new ArrayList<TopCode>();
+		}
+		List<TopCode> rst = new ArrayList<TopCode>(),
+					  tmp = null;
+		int n = codes.size(),
+			times = 0;
+		boolean isStart = false;
+		
+		for (int i=0;i<n;i++){
+			if (i == 0 || i == n - 1){
+				continue;
+			}
+			else if (loopMap.containsKey(codes.get(i).getCode())){
+				isStart = true;
+				times = loopMap.get(codes.get(i).getCode());
+				tmp = new ArrayList<TopCode>();
+			}
+			else if (codes.get(i).getCode() == end){
+				// push tmp to rst with multiple times
+				if (tmp == null){
+					return rst;
+				}
+				
+				while (times > 0){
+					rst.addAll(tmp);
+					times--;
+				}
+				tmp = null;
+				isStart = false;
+			}
+			else{
+				if (isStart){
+					tmp.add(codes.get(i));
+				}
+				else{
+					rst.add(codes.get(i));
+				}
+			}
+		}
+		return rst;
+	}
     //在新的activity中获得图片数据
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
     	super.onActivityResult(requestCode, resultCode, data);
@@ -309,8 +374,10 @@ public class GameMain extends Activity {
    		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，不正确", Toast.LENGTH_SHORT).show();
    	 }
    	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
-   		TopCodesList.remove(0);
-   		TopCodesList.remove(TopCodesList.size()-1);
+   		//TopCodesList.remove(0);
+   		//TopCodesList.remove(TopCodesList.size()-1);
+   		
+   		tempList = produceLoopArray(TopCodesList);
    	 }else{
    		 stopInstructions();
    		 stopList();
