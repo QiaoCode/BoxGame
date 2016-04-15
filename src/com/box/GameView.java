@@ -166,7 +166,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		map=gameMain.getMap(grade);
 		StepCount=0;//计数为0
 		list.clear();
-		Log.e(TAG,"timer开始");
+		Log.i(TAG,"timer开始");
 		gameMain.startTimer();
 		getMapSizeAndPosition();
 		getManPosition();

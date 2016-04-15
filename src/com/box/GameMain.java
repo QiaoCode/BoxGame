@@ -107,10 +107,10 @@ public class GameMain extends Activity {
         topCodeMap.put(143, new int[] {20,4});
         topCodeMap.put(151, new int[] {21,4});
         topCodeMap.put(155, new int[] {22,4});
-        loopMap.put(157, 1);
-        loopMap.put(167, 2);
-        loopMap.put(171, 3);
-        loopMap.put(173, 4);
+        loopMap.put(157, 2);
+        loopMap.put(167, 3);
+        loopMap.put(171, 4);
+        loopMap.put(173, 5);
        // topCodeMap.put(155, new int[] {22,4});
         //获得计时器数字，设置Handler
         ClockText=(TextView)findViewById(R.id.clocktext);
@@ -132,7 +132,7 @@ public class GameMain extends Activity {
 	    		switch (msg.what){
 	    	    case UPDATE_SCROLLTEXT:
 	    		    updateScrollText();
-	    		    Log.e(TAGS,"UPDATE_SCROLLTEXT"+msg);
+	    		    Log.i(TAGS,"UPDATE_SCROLLTEXT"+msg);
 	    		    break;
 	    		default:
 	    			break;
@@ -141,7 +141,7 @@ public class GameMain extends Activity {
 	    }; 
 	    rHandler=new Handler(){
         	public void handleMessage(Message msg){
-        		Log.e(TAG,"handleMessage");
+        		Log.i(TAG,"handleMessage");
         		switch (msg.what){
         		case UPDATE_RUNTEXT:
         			getInstructions();
@@ -157,7 +157,7 @@ public class GameMain extends Activity {
 	    		switch (msg.what){
 	    		case UPDATE_STEPTEXT:
 	    		    updateStepText();
-	    		    Log.e(TAGS,"UPDATE_STEPTEXT"+msg);
+	    		    Log.i(TAGS,"UPDATE_STEPTEXT"+msg);
 	    		    break;
 	    		default:
 	    			break;
@@ -174,12 +174,28 @@ public class GameMain extends Activity {
 				view.thisGrade();
 			}
         });
-	    //设置相机监听
+	    //动作运行
         bt_menu_run=(Button)findViewById(R.id.bt_menu_run);
         bt_menu_run.setOnClickListener(new OnClickListener(){
 			@Override
           	public void onClick(View v){
-	            open();
+			     if(TopCodesList==null||TopCodesList.size()<=2){
+		      		 stopInstructions();
+		      		 stopList();
+		      		 Toast.makeText(getApplicationContext(), "编程块不正确哦，检查一下再运行吧", Toast.LENGTH_SHORT).show();
+		      	 }
+		      	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
+		      		//TopCodesList.remove(0);
+		      		//TopCodesList.remove(TopCodesList.size()-1);
+		      		tempList = produceLoopArray(TopCodesList);
+		      		Toast.makeText(getApplicationContext(), "开始运行", Toast.LENGTH_SHORT).show();
+					//开启timer
+				     startList();
+		      	 }else{
+		      		 //stopInstructions();
+		      		 //stopList();
+		      		Toast.makeText(getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
+		      	 }
 			}
     	});
 	    //获得菜单按钮
@@ -205,7 +221,7 @@ public class GameMain extends Activity {
 		TopCodesList=null;
 	}
 	private void stopList(){
-		Log.e(TAG, "stopList");
+		Log.i(TAG, "stopList");
 		if (rTimer != null) {  
             rTimer.cancel();  
             rTimer = null;  
@@ -221,6 +237,7 @@ public class GameMain extends Activity {
     public int[] getKeyCode(int code){
     	return topCodeMap.get(code);
     }
+    
     public void convertKeyCodeToAction(int KeyCode){
     	switch(KeyCode){
     	case 19:
@@ -252,48 +269,45 @@ public class GameMain extends Activity {
     /**
      * @return
      */
-    /**
-     * @return
-     */
     private TopCode getInstructions(){
     	if(tempList==null){
     		Log.i(TAG,"tempList==null");
     	}else if(rcount<tempList.size()){
     		Instruction=tempList.get(rcount);//rcount是在updateTEXT的时候更新的
+    		//Toast.makeText(getApplicationContext(), "编程块"+rcount, 200).show();
     		int[] KeyCode=getKeyCode(Instruction.getCode());//长度为2
-    		System.out.println("进入");
-    		System.out.println(KeyCode[1]);
     		for(int i=0;i<KeyCode[1];i++){
     			convertKeyCodeToAction(KeyCode[0]);
     		}
-    		Log.e(TAG,"getInstructions"+String.valueOf(Instruction));
+    		Log.i(TAG,"getInstructions"+String.valueOf(Instruction));
     	//log.e(TAG,"getKeyCode"+String.valueOf(KeyCode));
-    	}else{ 
-    		Instruction=tempList.get(tempList.size()-1);
+    	}else{ //当rcount大于tempList的长度时，停止
+    		//Instruction=tempList.get(tempList.size()-1);
+    		//rcount=0;
     		stopList();
+    		
     	}
     	return Instruction;
     }
 
    public void sendRunMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
-       Log.e(TAG,"sendRunMessage-->");
+       Log.i(TAG,"sendRunMessage-->");
 	   if (rHandler != null) {  
            Message message = Message.obtain(rHandler, id); 
            rHandler.sendMessage(message);   
        }   
    }  
    public void startList() {
-	   Log.e(TAG,"startlist");
+	   Log.i(TAG,"startlist");
        if (rTimer == null) {  
            rTimer = new Timer();  
-       }  
+       }   
  
        if (rTimerTask == null) {  
            rTimerTask = new TimerTask() {  
                @Override  
-               public void run() {  
-                   //Log.i(TAG, "count: "+String.valueOf(count));  
-            	   Log.e(TAG,"startsendrun()");
+               public void run() {   
+            	   Log.i(TAG,"startsendrun()");
                    sendRunMessage(UPDATE_RUNTEXT);
                }   
            };  
@@ -310,7 +324,7 @@ public class GameMain extends Activity {
 			Intent intent=new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent,0);
     }
-    
+    //对循环块进行处理
 	public List<TopCode> produceLoopArray(List<TopCode> codes){
 		if (codes == null || codes.size() <= 2){
 			return new ArrayList<TopCode>();
@@ -354,6 +368,23 @@ public class GameMain extends Activity {
 		}
 		return rst;
 	}
+	public void checkBlocks(){
+		if(TopCodesList==null||TopCodesList.size()<=2){
+      		 stopInstructions();
+      		 stopList();
+      		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，再检查一下吧", Toast.LENGTH_SHORT).show();
+      	 }
+      	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
+      		//TopCodesList.remove(0);
+      		//TopCodesList.remove(TopCodesList.size()-1);
+      		tempList = produceLoopArray(TopCodesList);
+      		Toast.makeText(this.getApplicationContext(), "识别"+TopCodesList.size()+"个编程块，点击运行开始", Toast.LENGTH_SHORT).show();
+      	 }else{
+      		 //stopInstructions();
+      		 //stopList();
+      		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
+      	 }
+       }
     //在新的activity中获得图片数据
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
     	super.onActivityResult(requestCode, resultCode, data);
@@ -362,31 +393,29 @@ public class GameMain extends Activity {
        	 Bitmap bp=(Bitmap)data.getExtras().get("data");
        	 Scanner scanner=new Scanner();
        	 TopCodesList=scanner.scan(bp);//返回spots列表
-        } else if(resultCode == RESULT_CANCELED) { 
+       	 checkBlocks();
+       	 /*if(TopCodesList==null||TopCodesList.size()<=2){
+       		 stopInstructions();
+       		 stopList();
+       		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，再检查一下吧", Toast.LENGTH_SHORT).show();
+       	 }
+       	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
+       		//TopCodesList.remove(0);
+       		//TopCodesList.remove(TopCodesList.size()-1);
+       		tempList = produceLoopArray(TopCodesList);
+       		Toast.makeText(this.getApplicationContext(), "识别"+TopCodesList.size()+"个编程块，点击运行开始", Toast.LENGTH_SHORT).show();
+       	 }else{
+       		 stopInstructions();
+       		 stopList();
+       		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
+       	 } */
+        }else if(resultCode == RESULT_CANCELED) { 
     	   // 用户取消了图像捕获
         	Toast.makeText(this.getApplicationContext(), "取消照相", Toast.LENGTH_SHORT).show();
       		 stopInstructions();
        		 stopList();
         }
-   	 if(TopCodesList==null||TopCodesList.size()<=2){
-   		 stopInstructions();
-   		 stopList();
-   		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，不正确", Toast.LENGTH_SHORT).show();
-   	 }
-   	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
-   		//TopCodesList.remove(0);
-   		//TopCodesList.remove(TopCodesList.size()-1);
-   		
-   		tempList = produceLoopArray(TopCodesList);
-   	 }else{
-   		 stopInstructions();
-   		 stopList();
-   		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
-   	 }
-   	 
    	 Log.i(TAGC, "spots-->"+TopCodesList);
-     //开启timer
-     startList();
  }
     
     
@@ -398,7 +427,7 @@ public class GameMain extends Activity {
     }
     protected void updateScrollText() {
 	     ScrollText.setText(String.valueOf(getScrollCount()));
-	     Log.e(TAGS,"getscrollcount-->"+ScrollText);
+	     Log.i(TAGS,"getscrollcount-->"+ScrollText);
 	     sendScrollMessage(UPDATE_SCROLLTEXT);      
 	}
     public void sendScrollMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
@@ -416,7 +445,7 @@ public class GameMain extends Activity {
     }
     protected void updateStepText() {
 	     StepText.setText(String.valueOf(getStepCount()));
-	     Log.e(TAGS,"getstepcount--"+StepText);
+	     Log.i(TAGS,"getstepcount--"+StepText);
 	     sendStepMessage(UPDATE_STEPTEXT);      
 	}
     public void sendStepMessage(int id){ //调用的是Handler中的sendMessage(Message msg) 
