@@ -36,6 +36,7 @@ public class GameMain extends Activity {
     /** Called when the activity is first created. */
 	//GameView界面，该界面功能为对本案例中的场景进行渲染
 	private GameView view=null;
+	public GameMenu menu=null;
 	private Button bt_menu;
 	private Button bt_menu_run;
 	private Button bt_init;
@@ -84,12 +85,17 @@ public class GameMain extends Activity {
     public Map<Integer,Integer> loopMap=new HashMap<Integer,Integer>();//loop
     //loop
     private int end=179;
+    public boolean str=false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         //获得mainactivity中的视图
         view=(GameView)findViewById(R.id.gameView);
+      //得到当前Activity的意图
+      	Intent intent = this.getIntent();
+      	//获取数据
+      	str = intent.getBooleanExtra("Main", false);
         //对应Map
         topCodeMap.put(47, new int[] {19,1});
         topCodeMap.put(55, new int[] {20,1});
@@ -507,8 +513,8 @@ public class GameMain extends Activity {
     	//menu.add(Menu.NONE, Menu.First+1, 0, "设置").setIcon(R.drawable.setting);
     	menu.add(0,1,0,"下一关");
     	menu.add(0,2,0,"撤销");
-    	menu.add(0,3,0,"返回");
-    	menu.add(0,4,0,"退出");
+    	menu.add(0,3,0,"返回游戏");
+    	menu.add(0,4,0,"返回主菜单");
     	return super.onCreateOptionsMenu(menu);
     }
     
@@ -530,9 +536,16 @@ public class GameMain extends Activity {
     		view.undo();
     		break;
     	case 3:
+    		//save();
     		break;
     	case 4:
-    		this.finish();
+    		//System.exit(0);
+    		save();
+			stopTimer();
+		    //menu.IntentFlag=false;
+    		Intent intent = new Intent(GameMain.this, GameMenu.class);
+    		intent.putExtra("Main",false);
+			this.startActivity(intent);
     		break;
     	}
     	return super.onOptionsItemSelected(item);
@@ -601,7 +614,12 @@ public class GameMain extends Activity {
     	//SharedPreferences.Editor.putXX:向SharedPreferences里面存入指定的key对应的数值
     	/*editor.putInt("manX", view.getManX());
     	editor.putInt("manY", view.getManY());*/
+    	if(str==false){
     	editor.putInt("grade", view.getGrade());
+    	}else{
+    	editor.putInt("grade", 0);
+    	}
+    	//Log.e(str, "grade-->"+ view.getGrade());
     	/*meeeeee
     	editor.putInt("StepCount", view.getStepCount());
     	editor.putInt("ScrollCount", getScrollCount());

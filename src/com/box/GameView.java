@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -131,7 +132,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		initMap();
 		repaint();
 	}
-	
+
 	public void nextGrade()
 	{
 		//grade++;
@@ -241,7 +242,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		GestureDetector localGestureDetector = new GestureDetector(this);
 	    this.mGestureDetector = localGestureDetector;
 		//initMap();
-	   
 	    //构造方法执行时从优先数据中恢复游戏
 	    //关卡切换时调用initMap()
 	    resumeGame();

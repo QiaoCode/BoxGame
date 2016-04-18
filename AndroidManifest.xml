@@ -7,16 +7,17 @@
 
     <application android:icon="@drawable/ic_launcher" android:label="@string/app_name">
         <activity android:name=".GameMain"
+                  android:launchMode="singleTop"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  >
+                  android:noHistory="true"  >
         </activity>
         <activity android:name=".GameMenu"
+                  android:launchMode="singleTask"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  
                   >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +25,9 @@
             </intent-filter>
         </activity>
                 <activity android:name=".Help"
+                  android:launchMode="singleTop"
                   android:label="@string/help"
-                 >
+                  android:noHistory="true"  >
         </activity>
     </application>
 </manifest>

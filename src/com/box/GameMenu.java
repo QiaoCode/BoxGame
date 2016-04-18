@@ -10,12 +10,14 @@ import android.widget.Button;
 public class GameMenu extends Activity implements OnClickListener {
 	//声明按钮
 	private Button btnPlayGame, btnNewGame, btnGameHelp, btnExitGame;
-	private GameView view=null;
-	
+	public boolean IntentFlag=false;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Intent intent = this.getIntent();
+      	//获取数据
+		IntentFlag = intent.getBooleanExtra("Main", false);
 		//实例按钮
 		btnPlayGame = (Button) findViewById(R.id.playgame);
 		btnNewGame = (Button) findViewById(R.id.newgame);
@@ -35,15 +37,17 @@ public class GameMenu extends Activity implements OnClickListener {
 			//启动另外一个Activity
 			this.startActivity(intent);
 		} else if (v == btnNewGame) {
-			view.grade=0;
 			Intent intent = new Intent(GameMenu.this, GameMain.class);
-			//intent.putExtra("Main", "我是发送的数据~娃哈哈");
+			IntentFlag=true;
+			intent.putExtra("Main",IntentFlag);
 			this.startActivity(intent);
 			//this.finish();//退出Activity
 		}else if (v == btnGameHelp) {
 			Intent intent = new Intent(GameMenu.this, Help.class);
 			this.startActivity(intent);
 		}else if (v == btnExitGame) {
-			System.exit(0);//退出程序
+			//System.exit(0);//退出程序
+			int pid = android.os.Process.myPid();	//获取当前应用程序的PID
+			android.os.Process.killProcess(pid);	//杀死当前进程
 		}
 	}}
