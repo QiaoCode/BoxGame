@@ -43,7 +43,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	
 	private static String TAG="GameCount";
 	private SurfaceHolder holder;
-	private int grade=0;
+	public int grade=0;
 	//row,column记载人的行号 列号
 	//leftX,leftY 记载左上角图片的位置  避免图片从(0,0)坐标开始
 	private int row=7,column=7,leftX=0,leftY=0;

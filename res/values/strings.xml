@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">忍者迷宫</string>
+    <string name="help">游戏帮助</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="clockcount">0</string>
