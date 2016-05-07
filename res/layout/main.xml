@@ -16,7 +16,8 @@
   
       <ImageView
           android:id="@+id/bt_clock"
-          android:layout_alignTop="@id/gameView"
+          android:layout_marginTop="5dp"
+          android:layout_marginLeft="5dp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/clock" />
@@ -32,10 +33,11 @@
           />
       <ImageView
           android:id="@+id/bt_scroll"
-           android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_alignBottom="@id/bt_clock"
           android:layout_toRightOf="@id/clocktext"
+          android:text=" "
           android:background="@drawable/scroll" />
       <TextView
           android:id="@+id/scrolltext"
@@ -48,10 +50,11 @@
           android:textColor="#FFFFFF" />
       <ImageView
           android:id="@+id/bt_step"
-          android:layout_alignTop="@id/gameView"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_alignBottom="@id/bt_clock"
           android:layout_toRightOf="@id/scrolltext"
+          android:text=" "
           android:background="@drawable/step" />
       <TextView
           android:id="@+id/steptext"
@@ -98,7 +101,15 @@
       android:layout_centerHorizontal="true"
       android:background="@drawable/menu_selector"
       />
-
+   <Button
+      android:id="@+id/bt_music"
+      android:layout_alignBottom="@id/gameView"
+      android:layout_toRightOf="@id/bt_menu"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@drawable/run_selector"
+      android:text="stopm"
+      />
 
  
 </RelativeLayout>

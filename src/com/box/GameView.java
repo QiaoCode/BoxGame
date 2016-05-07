@@ -16,7 +16,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -76,6 +79,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 	//用来存储每个步骤后的地图信息（用来撤销）
 	private ArrayList list=new ArrayList();
 	private GestureDetector mGestureDetector;
+	//声明音乐的状态变量
+	private final int MEDIAPLAYER_PAUSE = 0;//暂停
+	private final int MEDIAPLAYER_PLAY = 1;//播放中
+	private final int MEDIAPLAYER_STOP = 2;//停止
+	//音乐的当前的状态
+	private int mediaSate = 1;
+	//声明一个音乐播放器
+	private MediaPlayer mediaPlayer;
+	//播放器管理类
+	private AudioManager am;
 	
 	public void getManPosition()
 	{
@@ -181,7 +194,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		SharedPreferences pre=this.getContext().getSharedPreferences("map", 0);
 		//getString()第二个参数为缺省值，如果preference中不存在该key，将返回缺省值
 		String mapString=pre.getString("mapString", "");
-		if(mapString.equals("")){
+		String strFlag=gameMain.getstrFlag();
+		if(mapString.equals("")||strFlag.equals("new")){
 			initMap();
 		}
 		else
@@ -241,7 +255,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		//手势
 		GestureDetector localGestureDetector = new GestureDetector(this);
 	    this.mGestureDetector = localGestureDetector;
-		//initMap();
+		//if(gameMain.strFlag.equals("new")){
+	    //initMap();}else{
 	    //构造方法执行时从优先数据中恢复游戏
 	    //关卡切换时调用initMap()
 	    resumeGame();
@@ -297,7 +312,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		// TODO Auto-generated method stub
 		paint=new Paint();
 		repaint();
-		//repaint();
+		//实例音乐播放器
+		mediaPlayer = MediaPlayer.create(getContext(), R.raw.bg_music);
+		//设置循环播放(设置了循环，“OnCompletionListener”监听器无法监听音乐是否播放完成)
+		mediaPlayer.setLooping(true);//设置循环播放  
+
 	}
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
@@ -732,7 +751,21 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback,OnGe
 		//canvas.drawARGB(125, 0x94,0xDA, 0x3C);
 		//canvas.drawRect(leftX, leftY,mapColumn*30,mapRow*30, paint);
 		//canvas.drawColor(Color.BLACK);
-		canvas.drawBitmap(game_bg, 0, 0, paint);
+		// 获得图片的宽高
+	    int bgwidth = game_bg.getWidth();
+	    int bgheight = game_bg.getHeight();
+	    // 设置想要的大小
+	    int newWidth = width;
+	    int newHeight = height;
+	    // 计算缩放比例
+	    float scaleWidth = ((float) newWidth) / bgwidth;
+	    float scaleHeight = ((float) newHeight) / bgheight;
+	    // 取得想要缩放的matrix参数
+	    Matrix matrix = new Matrix();
+	    matrix.postScale(scaleWidth, scaleHeight);
+	    // 得到新的图片
+	    Bitmap newbg = Bitmap.createBitmap(game_bg, 0, 0, bgwidth, bgheight, matrix,true);
+	    canvas.drawBitmap(newbg, 0, 0, paint);
 		for(int i=0;i<mapRow;i++)
 			for(int j=0;j<mapColumn;j++)
 			{

@@ -10,14 +10,12 @@ import android.widget.Button;
 public class GameMenu extends Activity implements OnClickListener {
 	//声明按钮
 	private Button btnPlayGame, btnNewGame, btnGameHelp, btnExitGame;
-	public boolean IntentFlag=false;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Intent intent = this.getIntent();
-      	//获取数据
-		IntentFlag = intent.getBooleanExtra("Main", false);
+		
 		//实例按钮
 		btnPlayGame = (Button) findViewById(R.id.playgame);
 		btnNewGame = (Button) findViewById(R.id.newgame);
@@ -29,19 +27,25 @@ public class GameMenu extends Activity implements OnClickListener {
 		btnGameHelp.setOnClickListener(this);
 		btnExitGame.setOnClickListener(this);
 	}
-
 	public void onClick(View v) {
 		if (v == btnPlayGame) {
 			//创建一个意图，并且设置需打开的Activity
 			Intent intent = new Intent(GameMenu.this, GameMain.class);
+			Bundle b = new Bundle();   
+            b.putString("Main", "old"); 
+            intent.putExtras( b );
 			//启动另外一个Activity
 			this.startActivity(intent);
+			//startActivityForResult(intent,1);
+			//this.finish();
 		} else if (v == btnNewGame) {
 			Intent intent = new Intent(GameMenu.this, GameMain.class);
-			IntentFlag=true;
-			intent.putExtra("Main",IntentFlag);
+			Bundle b = new Bundle();   
+            b.putString("Main", "new"); 
+            intent.putExtras( b );
+			//startActivityForResult(intent,2);
 			this.startActivity(intent);
-			//this.finish();//退出Activity
+			//this.finish();
 		}else if (v == btnGameHelp) {
 			Intent intent = new Intent(GameMenu.this, Help.class);
 			this.startActivity(intent);
@@ -50,4 +54,15 @@ public class GameMenu extends Activity implements OnClickListener {
 			int pid = android.os.Process.myPid();	//获取当前应用程序的PID
 			android.os.Process.killProcess(pid);	//杀死当前进程
 		}
-	}}
+	}
+	
+	/*@Override
+	protected void onActivityResult(int requestCode,int resultCode,Intent data){
+		switch(requestCode){
+		case 1:
+			//来自按钮1的请求
+		case 2:
+		//来自按钮2的请求
+		}
+	}*/
+}

@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,17 +86,16 @@ public class GameMain extends Activity {
     public Map<Integer,Integer> loopMap=new HashMap<Integer,Integer>();//loop
     //loop
     private int end=179;
-    public boolean str=false;
+    public String strFlag;
+    public int screenwidth,screenheight;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        strFlag = getIntent().getExtras().getString("Main"); 
         setContentView(R.layout.main);
         //获得mainactivity中的视图
+        //Toast.makeText(GameMain.this,strFlag, Toast.LENGTH_SHORT).show();
         view=(GameView)findViewById(R.id.gameView);
-      //得到当前Activity的意图
-      	Intent intent = this.getIntent();
-      	//获取数据
-      	str = intent.getBooleanExtra("Main", false);
         //对应Map
         topCodeMap.put(47, new int[] {19,1});
         topCodeMap.put(55, new int[] {20,1});
@@ -378,14 +378,14 @@ public class GameMain extends Activity {
 		if(TopCodesList==null||TopCodesList.size()<=2){
       		 stopInstructions();
       		 stopList();
-      		 Toast.makeText(this.getApplicationContext(), "编码块数量过少，再检查一下吧", Toast.LENGTH_SHORT).show();
-      	 }
+      		Toast.makeText(this.getApplicationContext(), "编码块数量过少，只识别了"+(TopCodesList == null ? 0 : TopCodesList.size())+"个编程块", Toast.LENGTH_SHORT).show();
+         	}
       	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
       		//TopCodesList.remove(0);
       		//TopCodesList.remove(TopCodesList.size()-1);
       		tempList = produceLoopArray(TopCodesList);
       		Toast.makeText(this.getApplicationContext(), "识别"+TopCodesList.size()+"个编程块，点击运行开始", Toast.LENGTH_SHORT).show();
-      	 }else{
+         	 }else{
       		 //stopInstructions();
       		 //stopList();
       		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
@@ -542,10 +542,9 @@ public class GameMain extends Activity {
     		//System.exit(0);
     		save();
 			stopTimer();
-		    //menu.IntentFlag=false;
     		Intent intent = new Intent(GameMain.this, GameMenu.class);
-    		intent.putExtra("Main",false);
 			this.startActivity(intent);
+			this.finish();
     		break;
     	}
     	return super.onOptionsItemSelected(item);
@@ -573,10 +572,11 @@ public class GameMain extends Activity {
     protected void onStop() {
     	// TODO Auto-generated method stub
     	super.onStop();
+		Log.e("GameMain","onStop");
     	//退出时保存游戏状态
     	save();
     }
-    
+
     public void save()
     {
     	//退出时只保存关卡
@@ -614,12 +614,7 @@ public class GameMain extends Activity {
     	//SharedPreferences.Editor.putXX:向SharedPreferences里面存入指定的key对应的数值
     	/*editor.putInt("manX", view.getManX());
     	editor.putInt("manY", view.getManY());*/
-    	if(str==false){
     	editor.putInt("grade", view.getGrade());
-    	}else{
-    	editor.putInt("grade", 0);
-    	}
-    	//Log.e(str, "grade-->"+ view.getGrade());
     	/*meeeeee
     	editor.putInt("StepCount", view.getStepCount());
     	editor.putInt("ScrollCount", getScrollCount());
@@ -633,6 +628,9 @@ public class GameMain extends Activity {
 	{
 		return count;
 	}
+	 public String getstrFlag(){
+	    	return strFlag;
+	    }
    /* public  String getMapString(int index)
     {
     	String map="";
@@ -682,4 +680,24 @@ public class GameMain extends Activity {
 		}
     	return map;
     }*/
+	protected void onDestroy(){
+		super.onDestroy();
+		Log.e("GameMain","onDestroy");
+	}
+	protected void onPause(){
+		super.onPause();
+		Log.e("GameMain","onPause");
+	}
+	protected void onRestart(){
+		super.onRestart();
+		Log.e("GameMain","onRestart");
+	}
+	protected void onResume(){
+		super.onResume();
+		Log.e("GameMain","onResume");
+	}
+	protected void onStart(){
+		super.onStart();
+		Log.e("GameMain","onStart");
+	}
 }
