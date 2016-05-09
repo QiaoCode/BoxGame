@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/startbg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+   <Button
+        android:id="@+id/playgame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/playgame_selector" />
+
+    <Button
+        android:id="@+id/newgame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playgame"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/newgame_selector"
+     />
+
+    <Button
+        android:id="@+id/gamehelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newgame"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/gamehelp_selector"
+       />
+
+    <Button
+        android:id="@+id/exitgame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/gamehelp"
+        android:layout_below="@+id/gamehelp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/exitgame_selector" />
+
+</RelativeLayout>
