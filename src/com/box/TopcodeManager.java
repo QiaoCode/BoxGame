@@ -2,12 +2,17 @@ package com.box;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.*;
+
+import TopCodes.TopCode;
 
 public class TopcodeManager {
 	private static final TopcodeManager INSTANCE = new TopcodeManager();
 	
 	private static Map<Integer, int[]> topCodeMap;
 	private static Map<Integer, Integer> loopMap;
+	
+	private static final int END = 179;
 	
 	private void init() {
 		topCodeMap = new HashMap<Integer, int[]>();
@@ -34,6 +39,11 @@ public class TopcodeManager {
 	public int getLoop(int topCode){
 		return loopMap.get(topCode);
 	}
+	
+	public boolean containsLoopCode(int topCode){
+		return loopMap.containsKey(topCode);
+	}
+
 	
 	/**
 	 * File Reader 
@@ -67,7 +77,52 @@ public class TopcodeManager {
 		}
 		return false;
 	}
-	
+	 //对循环块进行处理
+		public static List<TopCode> produceLoopArray(List<TopCode> codes){
+			if (codes == null || codes.size() <= 2){
+				return new ArrayList<TopCode>();
+			}
+			List<TopCode> rst = new ArrayList<TopCode>(),
+						  tmp = null;
+			int n = codes.size(),
+				times = 0;
+			boolean isStart = false;
+			
+			for (int i=0;i<n;i++){
+				if (i == 0 || i == n - 1){
+					continue;
+				}
+				else if (loopMap.containsKey(codes.get(i).getCode())){
+				//else if (TopcodeManager.getInstance().containsLoopCode(codes.get(i).getCode())){
+					isStart = true;
+					times = loopMap.get(codes.get(i).getCode());
+					//times = TopcodeManager.getInstance().getLoop(codes.get(i).getCode());
+					tmp = new ArrayList<TopCode>();
+				}
+				else if (codes.get(i).getCode() == END){
+					// push tmp to rst with multiple times
+					if (tmp == null){
+						return rst;
+					}
+					
+					while (times > 0){
+						rst.addAll(tmp);
+						times--;
+					}
+					tmp = null;
+					isStart = false;
+				}
+				else{
+					if (isStart){
+						tmp.add(codes.get(i));
+					}
+					else{
+						rst.add(codes.get(i));
+					}
+				}
+			}
+			return rst;
+		}
 	// test
 	public static void main(String[] args){
 		TopcodeManager topcodeManager = TopcodeManager.getInstance();

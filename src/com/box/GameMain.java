@@ -82,8 +82,8 @@ public class GameMain extends Activity {
     private static final int UPDATE_SCROLLTEXT=0;
     private static final int UPDATE_STEPTEXT=0;
     //对应
-    public Map<Integer,int[]> topCodeMap=new HashMap<Integer,int[]>();//{109-->[19,1],110-->[19,2]}
-    public Map<Integer,Integer> loopMap=new HashMap<Integer,Integer>();//loop
+    //public Map<Integer,int[]> topCodeMap=new HashMap<Integer,int[]>();//{109-->[19,1],110-->[19,2]}
+    //public Map<Integer,Integer> loopMap=new HashMap<Integer,Integer>();//loop
     //loop
     private int end=179;
     public String strFlag;
@@ -97,8 +97,8 @@ public class GameMain extends Activity {
         //Toast.makeText(GameMain.this,strFlag, Toast.LENGTH_SHORT).show();
         view=(GameView)findViewById(R.id.gameView);
         //对应Map
-        topCodeMap.put(47, new int[] {19,1});
-        topCodeMap.put(55, new int[] {20,1});
+        //topCodeMap.put(47, new int[] {19,1});
+       /* topCodeMap.put(55, new int[] {20,1});
         topCodeMap.put(103, new int[] {21,1});
         topCodeMap.put(107, new int[] {22,1});
         topCodeMap.put(59, new int[] {19,2});
@@ -115,8 +115,8 @@ public class GameMain extends Activity {
         topCodeMap.put(155, new int[] {22,4});
         loopMap.put(157, 2);
         loopMap.put(167, 3);
-        loopMap.put(171, 4);
-        loopMap.put(173, 5);
+        loopMap.put(1271, 4);
+        loopMap.put(173, 5);*/
        // topCodeMap.put(155, new int[] {22,4});
         //获得计时器数字，设置Handler
         ClockText=(TextView)findViewById(R.id.clocktext);
@@ -193,9 +193,11 @@ public class GameMain extends Activity {
 		      	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
 		      		//TopCodesList.remove(0);
 		      		//TopCodesList.remove(TopCodesList.size()-1);
+		      		 
 		      		tempList = produceLoopArray(TopCodesList);
 		      		Toast.makeText(getApplicationContext(), "开始运行", Toast.LENGTH_SHORT).show();
-					//开启timer
+		      		rcount=0;
+		      		//开启timer
 				     startList();
 		      	 }else{
 		      		 //stopInstructions();
@@ -240,9 +242,9 @@ public class GameMain extends Activity {
 		rcount = 0;
 	}
 	//************************************
-    public int[] getKeyCode(int code){
-    	return topCodeMap.get(code);
-    }
+   // public int[] getKeyCode(int code){
+    //	return topCodeMap.get(code);
+    //}
     
     public void convertKeyCodeToAction(int KeyCode){
     	switch(KeyCode){
@@ -281,11 +283,12 @@ public class GameMain extends Activity {
     	}else if(rcount<tempList.size()){
     		Instruction=tempList.get(rcount);//rcount是在updateTEXT的时候更新的
     		//Toast.makeText(getApplicationContext(), "编程块"+rcount, 200).show();
-    		int[] KeyCode=getKeyCode(Instruction.getCode());//长度为2
+    		//int[] KeyCode=getKeyCode(Instruction.getCode());//长度为2
+    		int[] KeyCode = TopcodeManager.getInstance().getKeyCode(Instruction.getCode());
     		for(int i=0;i<KeyCode[1];i++){
     			convertKeyCodeToAction(KeyCode[0]);
     		}
-    		Log.i(TAG,"getInstructions"+String.valueOf(Instruction));
+    		Log.e(TAG,"getInstructions"+String.valueOf(Instruction));
     	//log.e(TAG,"getKeyCode"+String.valueOf(KeyCode));
     	}else{ //当rcount大于tempList的长度时，停止
     		//Instruction=tempList.get(tempList.size()-1);
@@ -340,14 +343,32 @@ public class GameMain extends Activity {
 		int n = codes.size(),
 			times = 0;
 		boolean isStart = false;
-		
-		for (int i=0;i<n;i++){
+/*		boolean isEnd =false;		//*****
+		for(int j=0;j<n;j++){
+			if(TopcodeManager.getInstance().containsLoopCode(codes.get(j).getCode())){
+				for(int m=j;m<n;m++){
+					if(codes.get(m).getCode() == end){
+						isEnd= true;
+					}
+				}
+				if(isEnd == true){
+					Toast.makeText(this.getApplicationContext(), "使用了循环块，真棒！", Toast.LENGTH_SHORT).show();
+				}else{
+					Toast.makeText(this.getApplicationContext(), "循环块使用不正确，请检查", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+		//*****
+*/		for (int i=0;i<n;i++){
 			if (i == 0 || i == n - 1){
 				continue;
 			}
-			else if (loopMap.containsKey(codes.get(i).getCode())){
+			//else if (loopMap.containsKey(codes.get(i).getCode())){
+			else if (TopcodeManager.getInstance().containsLoopCode(codes.get(i).getCode())){
 				isStart = true;
-				times = loopMap.get(codes.get(i).getCode());
+				//times = loopMap.get(codes.get(i).getCode());
+				//获得循环的次数
+				times = TopcodeManager.getInstance().getLoop(codes.get(i).getCode());
 				tmp = new ArrayList<TopCode>();
 			}
 			else if (codes.get(i).getCode() == end){
@@ -383,12 +404,27 @@ public class GameMain extends Activity {
       	 else if(TopCodesList.get(0).getCode()==31&&TopCodesList.get(TopCodesList.size()-1).getCode()==109){
       		//TopCodesList.remove(0);
       		//TopCodesList.remove(TopCodesList.size()-1);
-      		tempList = produceLoopArray(TopCodesList);
-      		Toast.makeText(this.getApplicationContext(), "识别"+TopCodesList.size()+"个编程块，点击运行开始", Toast.LENGTH_SHORT).show();
+     		boolean isEnd =false;		//*****
+    		for(int j=0;j<TopCodesList.size();j++){
+    			if(TopCodesList.get(j).getCode()==157||TopCodesList.get(j).getCode()==167||TopCodesList.get(j).getCode()==171||TopCodesList.get(j).getCode()==173){
+    				for(int m=j;m<TopCodesList.size();m++){
+    					if(TopCodesList.get(m).getCode() == end){
+    						isEnd= true;
+    					}
+    				}
+    				if(isEnd == true){
+    		      		tempList = produceLoopArray(TopCodesList);
+    					Toast.makeText(this.getApplicationContext(), "使用了循环块，真棒！", Toast.LENGTH_SHORT).show();
+    		      		Toast.makeText(this.getApplicationContext(), "识别"+TopCodesList.size()+"个编程块，点击运行开始", Toast.LENGTH_SHORT).show();
+    				}else{
+    					Toast.makeText(this.getApplicationContext(), "循环块使用不正确，请检查", Toast.LENGTH_SHORT).show();
+    				}
+    			}
+    		}
          	 }else{
       		 //stopInstructions();
       		 //stopList();
-      		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确", Toast.LENGTH_SHORT).show();
+      		Toast.makeText(this.getApplicationContext(), "头尾编码块不正确，识别了"+(TopCodesList == null ? 0 : TopCodesList.size())+"个编程块", Toast.LENGTH_SHORT).show();
       	 }
        }
     //在新的activity中获得图片数据

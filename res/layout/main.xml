@@ -16,7 +16,7 @@
   
       <ImageView
           android:id="@+id/bt_clock"
-          android:layout_marginTop="5dp"
+          android:layout_marginTop="8dp"
           android:layout_marginLeft="5dp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -71,6 +71,7 @@
   <Button
       android:layout_alignBottom="@id/gameView"
       android:id="@+id/bt_menu_init"
+      android:layout_marginLeft="15dp"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/menu_init_selector"
@@ -91,7 +92,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@drawable/run_selector"
-      android:text="拍照" />
+      android:text=" " />
   <Button
       android:id="@+id/bt_menu"
       android:layout_alignBottom="@id/gameView"
@@ -107,8 +108,8 @@
       android:layout_toRightOf="@id/bt_menu"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@drawable/run_selector"
-      android:text="stopm"
+      android:background="@drawable/music_selector"
+      android:text=" "
       />
 
  
